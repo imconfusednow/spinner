@@ -8,9 +8,9 @@ export class Wheel {
         this.ctx = ctx;
         this.radius = radius;
         this.buttonSize = 40;
-        this.gap = 0.02;
+        this.gap = 12;
         this.setupButton();
-        this.rotation = Math.random() * this.FULLROTATION;
+        this.rotation = 0;
         this.speed = 0;
         this.x = this.ctx.canvas.width / 2;
         this.y = this.ctx.canvas.height / 2;
@@ -112,8 +112,12 @@ export class Wheel {
             ctx.fillStyle = this.COLOURS[index];
         }  
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, angle + this.gap / 2, angle + this.span - this.gap / 2, false);
-        ctx.arc(this.x, this.y, this.buttonSize + this.gap * 400, angle + this.span - this.gap / 0.2, angle + this.gap / 0.2, true);        
+        const theta = ( Math.PI / 2 ) - Math.acos(this.gap / (2 * this.radius));
+        const phi = ( Math.PI / 2 ) - Math.acos(this.gap / (2 * (this.buttonSize + this.gap)));
+        ctx.arc(this.x, this.y, this.radius, angle + theta, angle + this.span - theta, false);
+        ctx.arc(this.x, this.y, this.buttonSize + this.gap, angle + this.span - phi, angle + phi, true);    
+        // ctx.arc(this.x, this.y, this.radius, angle + this.gap, angle + this.span - this.gap, false);
+        // ctx.arc(this.x, this.y, this.buttonSize + this.gap, angle + this.span - this.gap, angle + this.gap, true);      
         ctx.stroke();
         ctx.fill();        
 

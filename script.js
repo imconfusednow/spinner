@@ -10,8 +10,8 @@ function setupCanvas() {
     const ctx = canvas.getContext("2d");
     
     let dpi = window.devicePixelRatio;
-    let styleHeight = +getComputedStyle(canvas).getPropertyValue("height").slice(0, -2);
-    let styleWidth = +getComputedStyle(canvas).getPropertyValue("width").slice(0, -2);
+    let styleHeight = getComputedStyle(canvas).getPropertyValue("height").slice(0, -2);
+    let styleWidth = getComputedStyle(canvas).getPropertyValue("width").slice(0, -2);
     canvas.setAttribute('width', styleWidth * dpi);
     canvas.setAttribute('height', styleHeight * dpi);
     ctx.textBaseline = "alphabetic";
@@ -87,3 +87,5 @@ function doFrame() {
     wheel.draw();
     window.requestAnimationFrame(doFrame);
 }
+
+document.addEventListener("mousemove", mouseMoveHandler, false);
