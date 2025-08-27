@@ -1,0 +1,54 @@
+- make button work *
+- animate button
+- fix angle between slices *
+- add json config (or just destructure kwargs)
+- replace variables etc with json config
+- show winner image
+- extract some of the canvas logic like keeping track of where the mouse is
+- add utils file
+- add text writing util
+- add circle writing util
+- add slice writing util?
+- move the sound logic outside of the class
+- add icons support
+- capture ctrl+s for update (space for spin or something?)
+- css variables
+- Scale text *
+- add themes ~
+	- populate themes from json
+	- highlight themes if not selected
+	- open after selection
+
+
+
+
+- Save names to url parameters
+- remove winner name 
+- add result modal 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Theme ideas:
+- Rick roll
+- Steak crisps
+- Chess
+- 
