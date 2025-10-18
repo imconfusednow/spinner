@@ -1,0 +1,9 @@
+services:
+  spinner:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: spinner
+    ports:
+      - "8000:80"
+    restart: unless-stopped

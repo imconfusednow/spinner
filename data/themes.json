@@ -1,0 +1,103 @@
+[
+    {
+        "name": "Bouncy",
+        "music": "bouncy.mp3",
+        "ending": "spring.mp3",
+        "image": "spring.png",
+        "animation": "bounce"
+    },
+    {
+        "name": "Snaaaaake",
+        "music": "mgs.mp3",
+        "ending": "alert.mp3",
+        "image": "mgs.png"
+    },
+    {
+        "name": "Invisibility",
+        "music": "wind.mp3",
+        "ending": "wind.mp3",
+        "image": "spin.svg",
+        "animation": "invisible"
+    },
+    {
+        "name": "Best one ever!",
+        "music": "rickroll.mp3",
+        "ending": "rickroll_ending.mp3",
+        "image": "rickroll.png"
+    },
+    {
+        "name": "Steak Crisps",
+        "music": "townsquare.mp3",
+        "ending": "townsquare_ending.mp3",
+        "image": "mccoys.png"
+    },
+    {
+        "name": "Windows",
+        "music": "windows.mp3",
+        "ending": "windows_ending.mp3",
+        "image": "windows.png"
+    },
+    {
+        "name": "Louise",
+        "music": "louise.mp3",
+        "ending": "louise.mp3",
+        "image": "louise.png",
+        "colours": ["#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"]
+    },
+    {
+        "name": "Techno Cat",
+        "music": "technocat.mp3",
+        "ending": "technocat_ending.mp3",
+        "image": "technocat.png",
+        "colours": ["#08ff09", "#08ff09", "#08ff09", "#08ff09", "#08ff09", "#08ff09", "#08ff09", "#08ff09", "#08ff09", "#08ff09", "#08ff09", "#08ff09"]
+    },
+    {
+        "name": "Wobble",
+        "music": "wobble.mp3",
+        "ending": "wobble_ending.mp3",
+        "image": "jelly.svg",
+        "animation": "wobble"
+    },
+    {
+        "name": "Grow",
+        "music": "inflate.mp3",
+        "ending": "big.mp3",
+        "image": "expand.svg",
+        "animation": "grow"
+    },
+    {
+        "name": "Louise 2",
+        "music": "louise2.mp3",
+        "ending": "louise2_ending.mp3",
+        "image": "louise2.png",
+        "optionColour": "green"
+    },
+    {
+        "name": "Deep Fried",
+        "music": "deep-fried.mp3",
+        "ending": "e.mp3",
+        "image": "deepfried.jpg",
+        "optionColour": "green"
+    },
+    {
+        "name": "Jurassic Park",
+        "music": "omgdinosaur.mp3",
+        "ending": "dinosaur-roar.mp3",
+        "image": "dinosaur.jpg",
+        "optionColour": "green"
+    },
+    {
+        "name": "Skibidi",
+        "music": "skibidi.mp3",
+        "ending": "skibidi-end.mp3",
+        "image": "skibidi.png",
+        "optionColour": "green"
+    },
+    {
+        "name": "Dead Meme",
+        "music": "meat.mp3",
+        "ending": "meat_end.mp3",
+        "image": "meat.svg",
+        "optionColour": "green"
+    }
+]

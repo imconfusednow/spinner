@@ -1,54 +1,54 @@
-- make button work *
-- animate button
-- fix angle between slices *
+
 - add json config (or just destructure kwargs)
 - replace variables etc with json config
 - show winner image
-- extract some of the canvas logic like keeping track of where the mouse is
-- add utils file
+- extract some of the canvas logic like keeping track of where the mouse is *
 - add text writing util
 - add circle writing util
 - add slice writing util?
 - move the sound logic outside of the class
-- add icons support
-- capture ctrl+s for update (space for spin or something?)
+- add icons support *
 - css variables
 - Scale text *
-- add themes ~
-	- populate themes from json
+- add themes ~ *
 	- highlight themes if not selected
 	- open after selection
+	- move to a backend out of the repo uploading etc *
+
+- change functions to private
+- make responsive
+- fix hardcoded y for animation + radius
+- leave marker still in animations
+- fix emoji *
+- minify
+- change check relies on names being different
+- .env file
+- logger
+- look at security of using user data XSS etc
+- spinner reverse direction
+- add segments one at a time animated
 
 
-
-
-- Save names to url parameters
+- improve bounce animation, using time
+- store options in browser
 - remove winner name 
 - add result modal 
+- in vestigate why button arrows glitches out occassionally
+- add favicon
+- boost text
+- add utils file
+- make button work *
+- animate button *
+- fix angle between slices *
+- populate themes from json
+- capture ctrl+s for update
+- Save names to url parameters
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Theme ideas:
-- Rick roll
-- Steak crisps
-- Chess
-- 
+flicky pickle
+giraffe
+Chess

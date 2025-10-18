@@ -1,0 +1,32 @@
+{
+  "name": "spinner",
+  "version": "1.0.0",
+  "description": "Spinner wheel for choosing between options, with themes.",
+  "homepage": "https://github.com/imconfusednow/spinner#readme",
+  "bugs": {
+    "url": "https://github.com/imconfusednow/spinner/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imconfusednow/spinner.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "express-handlebars": "^8.0.1",
+    "feather-icons": "^4.29.2",
+    "hbs": "^4.2.0",
+    "joi": "^18.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "vite": "^7.1.9"
+  }
+}
