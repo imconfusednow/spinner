@@ -5,7 +5,8 @@ import 'dotenv/config';
 const port = process.env.PORT || 80;
 
 
-app.use(express.static('public'));
+app.use(express.static('../client/dist'));
+app.use(express.static('dist'));
 
 
 app.listen(port, () => {

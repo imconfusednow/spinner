@@ -2,14 +2,6 @@
   "name": "spinner",
   "version": "1.0.0",
   "description": "Spinner wheel for choosing between options, with themes.",
-  "homepage": "https://github.com/imconfusednow/spinner#readme",
-  "bugs": {
-    "url": "https://github.com/imconfusednow/spinner/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/imconfusednow/spinner.git"
-  },
   "license": "ISC",
   "author": "",
   "type": "module",
