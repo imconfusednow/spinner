@@ -7,7 +7,7 @@ import {themesPath} from '../utils/constants.js';
 
 const router = Router();
 
-router.get('/api/themes', async (req, res)=>{  
+router.get('/themes', async (req, res)=>{  
   const jsonData = JSON.parse(await fs.readFile(themesPath, 'utf-8'));
   res.json(jsonData);
 });
@@ -23,7 +23,7 @@ const themeSchema = Joi.object({
   optionColour: Joi.string()
 }).options({allowUnknown: false});
 
-router.post('/api/themes', validate(themeSchema), async (req, res) => {
+router.post('/themes', validate(themeSchema), async (req, res) => {
   try {
     const jsonData = JSON.parse(await fs.readFile(themesPath, 'utf-8'));
 

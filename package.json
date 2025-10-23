@@ -1,0 +1,14 @@
+{
+  "name": "spinner",
+  "version": "1.0.0",
+  "description": "Spinner wheel for choosing between options, with themes.",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "scripts": {
+      "dev": "concurrently \"npm run dev --prefix client\" \"npm run dev --prefix server\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  }
+}
