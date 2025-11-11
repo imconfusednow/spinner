@@ -1,7 +1,10 @@
 <script setup>
     import { ref } from 'vue';
+    import OptionsInput from '@/components/optionsInput.vue';
+    import SpinnerCanvas from '@/components/SpinnerCanvas.vue';
 
     const themes = ref([]);
+    const options = ref([]);
 
     async function getThemes() {
         const url = "http://localhost:80/api/themes";
@@ -10,7 +13,6 @@
             if (!response.ok) {
                 throw new Error(`Response status: ${response.status}`);
             }
-
             const result = await response.json();
             themes.value = result;
         } catch (error) {
@@ -30,13 +32,9 @@
               <option v-for="(theme, i) in themes" :value="i">{{ theme.name }}</option>
           </select>
           <a id="manage-themes-link" href="/themes">Manage Themes</a>
-          <canvas id="spinner-canvas" width="900" height="900"></canvas>
-          <canvas id="test-canvas" width="900" height="900"></canvas>
+          <SpinnerCanvas :options="options" />
       </div>
-      <div class="options-div">
-          <textarea id="options-input"></textarea>
-          <button id="update-options-button" class="btn">Update</button>
-      </div>
+      <OptionsInput v-model="options" />
   </div>
 </template>
 
@@ -45,24 +43,6 @@
     position: relative;
 }
 
-.options-div {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: start;
-    padding: 1rem;
-    flex-grow: 1;
-}
-
-#spinner-canvas {
-    display: block;
-}
-
-
-#update-options-button {
-    font-size: 1rem;
-    background-color: #004774;
-}
 
 #theme-select {
     background-color: #405c79;

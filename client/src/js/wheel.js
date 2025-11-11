@@ -1,8 +1,7 @@
-import { showToast } from "/js/modals.js";
-import * as utils from "/js/utils.js";
-import {COLOURS} from "/js/constants.js";
-import { Canvas } from "/js/canvas.js";
-import { FULLROTATION } from '/js/constants.js'
+import { showToast } from "@/js/modals.js";
+import * as utils from "@/js/utils.js";
+import {COLOURS, FULLROTATION} from "@/js/constants.js";
+import { Canvas } from "@/js/canvas.js";
 
 export class Wheel {
     DECELERATION = 0.993;
@@ -37,7 +36,7 @@ export class Wheel {
 
     updateOptions(options) {
         this.options = options;
-        this.span = this.calculateSpan();
+        this.span = this.calculateSpan();    
     }
 
     setupButton() {
@@ -153,7 +152,7 @@ export class Wheel {
         const y = this.y + Math.sin(startAngle + span / 2) * this.radius;
         const rot = startAngle + span / 2;
 
-        const text = this.options[index].name;  
+        const text = this.options[index];  
 
         this.canvas.drawText(text, 60, "white", x, y, rot, 5, "right");
         
@@ -234,7 +233,7 @@ export class Wheel {
             return false;
         }
         const index = this.options.length - Math.floor(this.rotation / this.span) - 1;
-        const selection = this.options[index].name;
+        const selection = this.options[index];
 
         if (selection !== this.currentSelection) {
             if (this.currentSelection) {
@@ -307,7 +306,7 @@ export class Wheel {
     }
 
     removeOption(name) {
-        this.options = this.options.filter((option)=>{return option.name !== name});
+        this.options = this.options.filter((option)=>{return option !== name});
         this.span = this.calculateSpan();
     }
 

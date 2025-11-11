@@ -6,7 +6,7 @@ export class Canvas {
         this.width = canvas.width;
         this.height = canvas.height;
 
-        const [fCanvas, fCtx] = this.createCanvas('test-canvas');
+        const [fCanvas, fCtx] = this.createCanvas();
 
         this.fakeCanvas = fCanvas;
         this.fakeCtx = fCtx

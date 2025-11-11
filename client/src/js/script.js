@@ -7,24 +7,6 @@ const updateButton = document.querySelector('#update-options-button');
 const optionsInput = document.querySelector('#options-input');
 
 
-function loadParams() {
-    const params = new URLSearchParams(document.location.search);
-    const optionsString = params.get("options");
-    if (!optionsString) {
-        return;
-    }
-    const splitOptions = optionsString.split(",").join("\n");
-    optionsInput.value = splitOptions;
-}
-
-function saveParams(options) {
-    const params = new URLSearchParams(document.location.search);
-    const optionsString = options.map((option)=>{return option.name}).join(',');
-    params.set('options', optionsString);
-
-    const newUrl = `${window.location.pathname}?${params.toString()}`;
-    window.history.replaceState({}, '', newUrl);
-}
 
 function parseOptions() {    
     const optionsText = optionsInput.value;
