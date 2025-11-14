@@ -1,5 +1,6 @@
 <script setup>
   import { computed, ref, watch } from 'vue';
+  import { loadParams, saveParams } from '@/js/utils';
 
   const optionsText = ref('');
 
@@ -19,7 +20,7 @@
         returnOptions.push(line);
     }
 
-    // saveParams(returnOptions);
+    saveParams(returnOptions);
 
     return returnOptions;
   });
@@ -27,15 +28,18 @@
 
  watch(optionsText, ()=>{
   model.value = parsedOptions.value;
- },
-{ immediate: true });
+ });
+
+ const params = loadParams();
+ if (params) {
+  optionsText.value = params;
+ }
 
 </script>
 
 <template>
   <div class="options-div">
       <textarea id="options-input" v-model="optionsText" placeholder="Type each option on a new line here :)"></textarea>
-      <button id="update-options-button" class="btn">Update</button>
   </div>
 </template>
 
@@ -47,10 +51,5 @@
       align-items: start;
       padding: 1rem;
       flex-grow: 1;
-  }
-
-  #update-options-button {
-      font-size: 1rem;
-      background-color: #004774;
   }
 </style>

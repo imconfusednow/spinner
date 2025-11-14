@@ -15,7 +15,7 @@ export function captureCTRL(key, callback) {
 
 export function saveParams(options) {
     const params = new URLSearchParams(document.location.search);
-    const optionsString = options.map((option)=>{return option.name}).join(',');
+    const optionsString = options.map((option)=>{return option}).join(',');
     params.set('options', optionsString);
 
     const newUrl = `${window.location.pathname}?${params.toString()}`;
@@ -29,5 +29,5 @@ export function loadParams() {
         return;
     }
     const splitOptions = optionsString.split(",").join("\n");
-    optionsInput.value = splitOptions;
+    return splitOptions;
 }

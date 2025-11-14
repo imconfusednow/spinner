@@ -1,12 +1,13 @@
 <script setup>
-    import { ref, onMounted, watchEffect } from 'vue'
+    import { ref, onMounted, watch } from 'vue'
     import { Wheel } from '@/js/wheel';
     import { Modal } from '@/js/modals';
+    import { watchOnce } from '@vueuse/core';
 
-    let wheel = ref();;
-    const props = defineProps(['options']);
+    let wheel = ref();
+    const props = defineProps(['options', 'currentTheme', 'themes']);
 
-    watchEffect(()=>{
+    watch(()=>props.options, ()=>{
       if (!wheel.value) {
         return;
       }
@@ -14,11 +15,24 @@
       wheel.value.draw();
     });
 
+    watch(()=>props.currentTheme, ()=>{
+      if (!wheel.value) {
+        return;
+      }
+      wheel.value.setCurrentTheme(props.currentTheme);
+    });
+
+    watchOnce(()=>props.themes, ()=> {
+        const resultModal = new Modal({startOpen: false, classes: []});
+        resultModal.setHeaderText("Spinner Result");
+        wheel.value = new Wheel( 'spinner-canvas', 400, props.options, resultModal);
+        wheel.value.draw();
+        wheel.value.setThemes(props.themes);
+        setInterval(()=>wheel.value.draw(), 1);
+    });
+
     onMounted(()=>{
-      const resultModal = new Modal({startOpen: false, classes: []});
-      resultModal.setHeaderText("Spinner Result");
-      wheel.value = new Wheel('spinner-canvas', 400, props.options, resultModal);
-      wheel.value.draw();
+      
     });
     
 
@@ -27,13 +41,12 @@
 <template>
   <div class="canvas-outer-div">
     <canvas id="spinner-canvas" width="900" height="900"></canvas>
-    {{ options }}
+    {{currentTheme}}
   </div>
 </template>
 
 <style scoped>
-#spinner-canvas {
-    display: block;
-}
-
+  #spinner-canvas {
+      display: block;
+  }
 </style>
