@@ -6,5 +6,13 @@ import { ref } from 'vue';
 
 
 <template>
-  <RouterView />
+  <div>
+    <RouterView />
+  </div>
 </template>
+
+<style scoped>
+  div {
+    padding: 0.6rem;
+  }
+</style>

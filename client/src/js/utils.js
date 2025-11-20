@@ -31,3 +31,30 @@ export function loadParams() {
     const splitOptions = optionsString.split(",").join("\n");
     return splitOptions;
 }
+
+export async function startAnimationLoop(func) {
+    function loop(timestamp) {
+        func(timestamp);
+        window.requestAnimationFrame(loop);
+        
+    }
+    window.requestAnimationFrame(loop);
+}    
+
+export async function apiFetch(path, method="get") {
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+
+    const response = await fetch(`${protocol}//${hostname}:80${path}`);
+    if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+    }
+    return await response.json();    
+}
+
+export function fuzzyMatch(string, search) {
+    if (string == null) {
+        string = "";
+    }
+    return string.toLowerCase().includes(search.toLowerCase());
+}

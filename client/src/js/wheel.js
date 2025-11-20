@@ -1,18 +1,19 @@
 import { showToast } from "@/js/modals.js";
 import * as utils from "@/js/utils.js";
 import { COLOURS, FULLROTATION } from "@/js/constants.js";
-import { Canvas } from "@/js/canvas.js";
-import { useMouse } from "@vueuse/core";
+import { useMouse, useTitle } from "@vueuse/core";
 
 const { x, y, sourceType } = useMouse();
+const title = useTitle();
+
 
 export class Wheel {
   DECELERATION = 0.993;
   CLICKDURATION = 0.5;
   STATICSPEED = 0.005;
   AUDIOCTX = new (window.AudioContext || window.webkitAudioContext)();
-  constructor(canvasId, radius, options, resultModal) {
-    this.canvas = new Canvas(canvasId);
+  constructor(canvas, radius, options, resultModal) {
+    this.canvas = canvas
     this.radius = radius;
     this.gap = 12;
     this.themes = [];
@@ -105,7 +106,7 @@ export class Wheel {
       this.setWinner(this.options[this.currentSelection]);
     }
     if (!this.hadBonus && this.speed < 0.004) {
-      if (Math.random() < 0.15) {
+      if (Math.random() < 0.1) {
         this.bonusSpin();
       }
       this.hadBonus = true;
@@ -123,6 +124,7 @@ export class Wheel {
       showToast("Please select a theme", 3000, ["warning"]);
       return;
     }
+    title.value = "Spinner";
     this.hadBonus = false;
     this.spinning = true;
     this.spinTime = 0;
@@ -136,8 +138,8 @@ export class Wheel {
     this.themes = themes;
   }
 
-  setCurrentTheme(themeName) {
-    this.currentTheme = this.themes[themeName] || {};
+  setCurrentTheme(theme) {
+    this.currentTheme = theme || {};
   }
 
   bonusSpin() {
@@ -264,7 +266,7 @@ export class Wheel {
     const selection = index;
 
     if (selection !== this.currentSelection) {
-      if (this.currentSelection) {
+      if (this.currentSelection !== "") {
         changed = true;
       }
       this.currentSelection = selection;
@@ -322,6 +324,7 @@ export class Wheel {
   setWinner(winner) {
     this.spinning = false;
     this.speed = this.STATICSPEED;
+    title.value = `${winner} wins!`;
     this.resultModal.setBodyText(
       `And the winner is... ${winner} ${utils.randomEmoji()}`
     );

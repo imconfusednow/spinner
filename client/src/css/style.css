@@ -8,19 +8,10 @@
 }
 
 body {
+    margin: 0;
     background-color: #0f0f0f;
     color: white;
-    padding: 0.6rem;
     font-family: Roboto;
-}
-
-textarea {
-    max-height: 90vh;
-    flex-grow: 1;
-    width: 100%;
-    padding: 1rem;
-    font-size: 1.7rem;
-    resize: none;
 }
 
 a {
@@ -33,7 +24,8 @@ a {
 }
 
 .two-cols {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 .btn {
@@ -62,6 +54,11 @@ a {
 .btn-dark {
     background-color: #2d2a2a;
     color: white;
+}
+
+.btn-light {
+    background-color: #e8e1e1;
+    color: black;
 }
 
 .modal {

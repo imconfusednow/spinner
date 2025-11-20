@@ -3,6 +3,8 @@
     import { Wheel } from '@/js/wheel';
     import { Modal } from '@/js/modals';
     import { watchOnce } from '@vueuse/core';
+    import { Canvas } from "@/js/canvas.js";
+    import {startAnimationLoop} from "@/js/utils.js";
 
     let wheel = ref();
     const props = defineProps(['options', 'currentTheme', 'themes']);
@@ -25,10 +27,10 @@
     watchOnce(()=>props.themes, ()=> {
         const resultModal = new Modal({startOpen: false, classes: []});
         resultModal.setHeaderText("Spinner Result");
-        wheel.value = new Wheel( 'spinner-canvas', 400, props.options, resultModal);
-        wheel.value.draw();
+        const canvas = new Canvas('spinner-canvas');
+        wheel.value = new Wheel(canvas, 400, props.options, resultModal);        
         wheel.value.setThemes(props.themes);
-        setInterval(()=>wheel.value.draw(), 1);
+        startAnimationLoop(()=>wheel.value.draw());
     });
 
     onMounted(()=>{
@@ -40,13 +42,14 @@
 
 <template>
   <div class="canvas-outer-div">
-    <canvas id="spinner-canvas" width="900" height="900"></canvas>
-    {{currentTheme}}
+    <canvas id="spinner-canvas"></canvas>
   </div>
 </template>
 
 <style scoped>
   #spinner-canvas {
       display: block;
+      width: 100%;
+      min-height: 900px;
   }
 </style>

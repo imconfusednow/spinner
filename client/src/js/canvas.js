@@ -9,7 +9,7 @@ export class Canvas {
         const [fCanvas, fCtx] = this.createCanvas();
 
         this.fakeCanvas = fCanvas;
-        this.fakeCtx = fCtx
+        this.fakeCtx = fCtx;
     }
 
     createCanvas(canvasId) {
@@ -78,7 +78,5 @@ export class Canvas {
 
         this.ctx.restore();
         this.fakeCtx.restore();
-    }
-
-    
+    }   
 }

@@ -1,21 +1,20 @@
 <script setup>
 import { ref } from 'vue';
-import OptionsInput from '@/components/optionsInput.vue';
+import { apiFetch } from '@/js/utils.js';
+import OptionsInput from '@/components/OptionsInput.vue';
 import SpinnerCanvas from '@/components/SpinnerCanvas.vue';
+import FilterSelect from '@/components/FilterSelect.vue';
 
 const themes = ref([]);
-const options = ref();
-const currentTheme = ref("");
+const options = ref([]);
+const currentTheme = ref(null);
+const showMenu = ref(false);
 
 async function getThemes() {
-    const url = "http://localhost:80/api/themes";
+    const url = "/api/themes";
     try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
-        }
-        const result = await response.json();
-        themes.value = result;
+        const response = await apiFetch(url);        
+        themes.value = response;
     } catch (error) {
         console.error(error.message);
     }
@@ -29,11 +28,8 @@ getThemes();
     <div class="two-cols">
         <div class="spinner-div">
             <div id="theme-div">
-                <select id="theme-select" v-model="currentTheme">
-                    <option selected value="">Select Theme</option>
-                    <option v-for="(theme, i) in themes" :value="i">{{ theme.name }}</option>
-                </select>
-                <a id="manage-themes-link" href="/themes">Manage Themes</a>
+                <button class="btn btn-light"><img src="/images/menu.svg" class="menu-icon" @click="showMenu = true"></img></button>
+                <FilterSelect v-model="currentTheme" :options="themes" defaultText="Choose Theme" />                         
             </div>
             <SpinnerCanvas :options="options" :currentTheme="currentTheme" :themes="themes" />
         </div>
@@ -54,21 +50,8 @@ getThemes();
     justify-content: space-between;
 }
 
-
-#theme-select {
-    background-color: #405c79;
-    color: white;
-    border: none;
-    padding: 1rem;
-    border-radius: 5px;
-    width: 50%;
-    max-width: 250px;
-    font-size: 1.2rem;
-
-    &.error {
-        background: orange;
-    }
+.menu-icon {
+    width: 2rem;
 }
 
-#manage-themes-link {}
 </style>

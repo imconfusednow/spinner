@@ -1,0 +1,34 @@
+import path from "path";
+import fs from "fs";
+import Database from "better-sqlite3";
+import { __basedir } from "../utils/constants.js";
+
+const localDir = path.join(__basedir, "src", "db");
+export const db = new Database(path.join(localDir, "spinner.sqlite"));
+
+db.exec(`
+    CREATE TABLE IF NOT EXISTS migrations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE,
+        applied_at TEXT DEFAULT CURRENT_TIMESTAMP
+    );
+`);
+
+export function runMigrations() {
+    const migrationDir = path.join(localDir, "migrations");
+    const files = fs.readdirSync(migrationDir).sort();
+
+    const applied = db.prepare("SELECT name FROM migrations").all().map(r => r.name);
+    const insert = db.prepare("INSERT INTO migrations (name) VALUES (?)");
+
+    for (const file of files) {
+        if (!applied.includes(file)) {
+            console.log(`Applying migration: ${file}`);
+            const sql = fs.readFileSync(path.join(migrationDir, file), "utf8");
+            db.exec(sql);
+            insert.run(file);
+        }
+    }
+}
+
+runMigrations();

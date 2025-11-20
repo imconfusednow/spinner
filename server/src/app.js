@@ -4,7 +4,9 @@ import apiRoutes from './routes/apiRoutes.js';
 import { __basedir } from './utils/constants.js';
 import { create } from "express-handlebars";
 import cors from 'cors';
+import {runMigrations} from "./db/index.js";
 
+runMigrations();
 
 const app = express();
 const hbs = create({
