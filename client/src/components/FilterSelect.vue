@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref, useTemplateRef, nextTick } from 'vue';
-import { onClickOutside } from '@vueuse/core';
+import { onClickOutside, onKeyStroke } from '@vueuse/core';
 import { fuzzyMatch } from '@/js/utils.js'
 
 const props = defineProps(['options', 'defaultText']);
@@ -14,6 +14,10 @@ const searchBox = useTemplateRef('search-box');
 onClickOutside( searchBox, (event) => {
     searching.value = false;
 });
+
+onKeyStroke('Enter', (e) => {
+  handleSelected(filteredOptions.value[0]);
+}, { target: searchBox });
 
 function handleSelected(optionValue) {
     model.value = optionValue;
@@ -52,10 +56,10 @@ const closedText = computed(() => {
     <div class="outer-div">
         <input v-model="search" v-show="searching" class="search-box" placeholder="Search themes" ref="search-box" />
         <input v-model="model" hidden />
-        <button class="option-button" @click="setSearching" v-show="!searching">{{ closedText }}<span class="dropdown-v">⌄</span></button>
+        <button class="option-button" @click="setSearching" v-show="!searching">{{ closedText }}<span class="dropdown-v">V</span></button>
         <div class="pretend-select" v-show="searching">
-            <button v-for="(option, i) in filteredOptions" class="option-button" @click="handleSelected(option)"
-                :key="option.id">{{ option.name }}</button>
+            <button v-for="option in filteredOptions" class="option-button" @click="handleSelected(option)"
+                :key="option.value" :style="{ backgroundColor: option.colour }">{{ option.label }}</button>
         </div>
     </div>
 </template>
@@ -121,10 +125,13 @@ const closedText = computed(() => {
     padding-inline: 1rem;
 
     &:hover {
-        background-color: #354c64;
+        filter: brightness(0.8);
         cursor: pointer;
     }
+}
 
+.dropdown-v {
+    font-size: 0.8rem;
 }
 
 </style>

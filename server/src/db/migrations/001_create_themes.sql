@@ -5,5 +5,7 @@ CREATE TABLE IF NOT EXISTS themes (
     ending TEXT,
     image TEXT,
     animation_id INTEGER,
+    colours TEXT,
+    spinner_id INTERGER,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );

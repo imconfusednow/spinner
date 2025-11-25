@@ -61,7 +61,7 @@ export class Canvas {
         const measturedText = this.fakeCtx.measureText(text);
 
         this.fakeCtx.canvas.width = measturedText.width;
-        this.fakeCtx.canvas.height = measturedText.actualBoundingBoxAscent + measturedText.actualBoundingBoxDescent;
+        this.fakeCtx.canvas.height = measturedText.actualBoundingBoxAscent + measturedText.actualBoundingBoxDescent + 5; // Doesn't quite work, give some leeway
         this.fakeCtx.font = `${size}px Roboto`;
         this.fakeCtx.textAlign = 'left';
         this.fakeCtx.textBaseline = 'middle';

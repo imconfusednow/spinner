@@ -3,8 +3,7 @@ import fs from "fs";
 import Database from "better-sqlite3";
 import { __basedir } from "../utils/constants.js";
 
-const localDir = path.join(__basedir, "src", "db");
-export const db = new Database(path.join(localDir, "spinner.sqlite"));
+export const db = new Database(path.join(__basedir, "data", "spinner.sqlite"));
 
 db.exec(`
     CREATE TABLE IF NOT EXISTS migrations (
@@ -15,7 +14,7 @@ db.exec(`
 `);
 
 export function runMigrations() {
-    const migrationDir = path.join(localDir, "migrations");
+    const migrationDir = path.join(__basedir, "src", "db", "migrations");
     const files = fs.readdirSync(migrationDir).sort();
 
     const applied = db.prepare("SELECT name FROM migrations").all().map(r => r.name);

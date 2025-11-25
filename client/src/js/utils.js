@@ -44,8 +44,10 @@ export async function startAnimationLoop(func) {
 export async function apiFetch(path, method="get") {
     const protocol = window.location.protocol;
     const hostname = window.location.hostname;
+    const port = window.location.port;
 
-    const response = await fetch(`${protocol}//${hostname}:80${path}`);
+    // const response = await fetch(`${protocol}//${hostname}:${port}${path}`);
+    const response = await fetch(`${path}`);
     if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
     }

@@ -76,26 +76,21 @@ export class Wheel {
   physicsStep(changedSelection) {
     if (this.currentTheme.animation == "bounce") {
         const mag = 150 * (this.speed + 0.5);
-      this.y = this.canvas.height / 2 - Math.abs(Math.sin(this.spinTime / 20) * mag);
-    } else {
-      this.y = this.canvas.height / 2;
+        this.y = this.canvas.height / 2 - Math.abs(Math.sin(this.spinTime / 20) * mag);
     }
     if (this.currentTheme.animation == "wobble") {
+      const mag = 400 * (this.speed + 0.1);
       this.x =
-        this.canvas.height / 2 -
-        Math.abs(Math.sin(this.spinTime / 100) * 100) -
-        Math.abs(Math.cos(this.spinTime / 100) * 100) +
-        100;
+        this.canvas.width / 2 -
+        Math.sin(this.spinTime / 4) * mag;
+      this.radius = Math.abs(Math.cos(this.spinTime / 7) * 60 + 375);
     }
     if (this.currentTheme.animation == "grow") {
       if (this.spinTime === 0) {
         this.radius = 0;
       }
       this.radius += Math.random() * 4;
-    } else {
-      this.radius = 400;
     }
-    this.radius += 0.1;
     
     if (this.rotation > FULLROTATION) {
       this.rotation -= FULLROTATION;
@@ -130,7 +125,7 @@ export class Wheel {
     this.spinTime = 0;
     this.speed = speed;
     this.direction = Math.random() < 0.5 ? 1 : -1;
-    this.loadSound(this.currentTheme.music, "music");
+    this.loadSound(`themes/${this.currentTheme.music}`, "music");
     this.playSound("music");
   }
 
@@ -230,8 +225,9 @@ export class Wheel {
     ctx.fill();
     ctx.rotate(this.rotation * this.direction);
     if (this.currentTheme.image && this.spinning) {
+      const path = `/themes/${this.currentTheme.image}`;
       const img = this.loadImage(
-        this.currentTheme.image,
+        path,
         this.currentTheme.name
       );
       ctx.drawImage(
@@ -242,7 +238,8 @@ export class Wheel {
         this.buttonSize() * 2
       );
     } else {
-      const img = this.loadImage("spin.svg", "default");
+      const path = `spin.svg`;
+      const img = this.loadImage(path, "default");
       ctx.drawImage(
         img,
         -this.buttonSize() / 2,
@@ -290,7 +287,7 @@ export class Wheel {
     if (this.sounds[name]) {
       return this.sounds[name];
     }
-    const sound = new Audio(`sounds/${file}`);
+    const sound = new Audio(`/sounds/${file}`);
     sound.preload = "auto";
     sound.load();
     this.sounds[name] = sound;
@@ -323,6 +320,7 @@ export class Wheel {
 
   setWinner(winner) {
     this.spinning = false;
+    this.resetState();
     this.speed = this.STATICSPEED;
     title.value = `${winner} wins!`;
     this.resultModal.setBodyText(
@@ -330,7 +328,7 @@ export class Wheel {
     );
     this.resultModal.show();
     this.stopSound("music");
-    this.loadSound(this.currentTheme.ending, "ending");
+    this.loadSound(`themes/${this.currentTheme.ending}`, "ending");
     this.playSound("ending", { loop: false, stopAfter: 5000 });
     this.resultModal.addButton(
       `Remove ${winner}`,
@@ -340,6 +338,13 @@ export class Wheel {
       },
       ["btn-red"]
     );
+  }
+
+  resetState() {
+    this.x = this.canvas.width / 2;
+    this.y = this.canvas.height / 2;
+    this.radius = 400;
+    
   }
 
   removeOption(name) {
