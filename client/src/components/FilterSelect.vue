@@ -117,7 +117,7 @@ const closedText = computed(() => {
     width: 100%;
     max-width: 250px;
     font-size: 1.4rem;
-    min-height: 50px;
+    min-height: 55px;
     text-align: left;
     display: flex;
     justify-content: space-between;

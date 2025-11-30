@@ -1,18 +1,17 @@
 <script setup>
-import { ref } from 'vue';
-
-
+import SideMenu from '@/components/SideMenu.vue';
 </script>
 
 
 <template>
-  <div>
+  <div class="outer-div">
+    <!-- <SideMenu /> -->
     <RouterView />
   </div>
 </template>
 
 <style scoped>
-  div {
+  .outer-div {
     padding: 0.6rem;
   }
 </style>

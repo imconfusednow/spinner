@@ -21,18 +21,26 @@ export class Canvas {
             canvas = document.createElement('canvas');
         }
         const ctx = canvas.getContext("2d");
-        
-        let dpi = window.devicePixelRatio;
-        let styleHeight = getComputedStyle(canvas).getPropertyValue("height").slice(0, -2);
-        let styleWidth = getComputedStyle(canvas).getPropertyValue("width").slice(0, -2);
-        canvas.setAttribute('width', styleWidth * dpi);
-        canvas.setAttribute('height', styleHeight * dpi);
+
         ctx.textBaseline = "alphabetic";
         ctx.textAlign = "center";
         ctx.font = "50px Roboto";
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2;        
 
         return [canvas, ctx];
+    }
+
+    startStep() {
+        let rect = this.canvas.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
+
+        this.canvas.width = width;
+        this.canvas.height = height;
+        this.width = width;
+        this.height = height;
+        this.ctx.clearRect(0, 0, width, height);
+        return [width, height];
     }
 
     drawSegment(x, y, fillColour, startAngle, span, radius, innerRadius, margin) {
@@ -47,7 +55,7 @@ export class Canvas {
         this.ctx.arc(x, y, innerRadius + margin, startAngle + span - phi, startAngle + phi, true);
    
         this.ctx.stroke();
-        this.ctx.fill();
+        this.ctx.fill();        
     }
 
     drawText(text, size, colour, x, y, rotation, margin, align) {
@@ -56,12 +64,13 @@ export class Canvas {
         this.fakeCtx.clearRect(0, 0, this.fakeCanvas.width, this.fakeCanvas.height);
 
         this.ctx.translate(x, y);
-        this.ctx.rotate(rotation + 0.05);
+        this.ctx.rotate(rotation);
 
+        this.fakeCtx.font = `${size}px Roboto`;
         const measturedText = this.fakeCtx.measureText(text);
 
         this.fakeCtx.canvas.width = measturedText.width;
-        this.fakeCtx.canvas.height = measturedText.actualBoundingBoxAscent + measturedText.actualBoundingBoxDescent + 5; // Doesn't quite work, give some leeway
+        this.fakeCtx.canvas.height = measturedText.actualBoundingBoxAscent + measturedText.actualBoundingBoxDescent + 50; // Doesn't quite work, give some leeway
         this.fakeCtx.font = `${size}px Roboto`;
         this.fakeCtx.textAlign = 'left';
         this.fakeCtx.textBaseline = 'middle';

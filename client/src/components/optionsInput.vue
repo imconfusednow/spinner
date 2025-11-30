@@ -57,6 +57,5 @@ textarea {
   gap: 0.5rem;
   align-items: start;
   padding-inline: 1rem;
-  flex-grow: 1;
 }
 </style>

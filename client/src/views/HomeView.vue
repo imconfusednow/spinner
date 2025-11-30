@@ -5,11 +5,14 @@ import OptionsInput from '@/components/OptionsInput.vue';
 import SpinnerCanvas from '@/components/SpinnerCanvas.vue';
 import FilterSelect from '@/components/FilterSelect.vue';
 import { DateTime } from 'luxon';
+import { useSpinnerStore } from '@/stores/spinner';
+
+const spinnerStore = useSpinnerStore();
 
 const themes = ref([]);
 const options = ref([]);
 const currentTheme = ref(null);
-const showMenu = ref(false);
+
 
 async function getThemes() {
     const url = "/api/themes";
@@ -26,6 +29,7 @@ function parseThemes(themes) {
         theme.value = theme.id;
         theme.label = theme.name;
         theme.colour = ( DateTime.fromISO(theme.created_at.replace(" ", "T")) > DateTime.now().minus({weeks: 1}) ) ? 'green': '';
+        theme.colours = ( theme.colours ) ? theme.colours.split(',') : '';
     }
     return themes;
 }
@@ -34,25 +38,29 @@ getThemes();
 </script>
 
 <template>
-    <span id="debug-text"></span>
-    <div class="two-cols">
+    <div class="outer-div">
         <div class="spinner-div">
-            <div id="theme-div">
-                <button class="btn btn-light"><img src="/images/menu.svg" class="menu-icon" @click="showMenu = true"></img></button>
-                <FilterSelect v-model="currentTheme" :options="themes" defaultText="Choose Theme" />                         
+            <div class="theme-div"> 
+                <FilterSelect v-model="currentTheme" :options="themes" defaultText="Choose Theme" style="margin-left: auto;"  v-show="!spinnerStore.spinning"/>                         
             </div>
             <SpinnerCanvas :options="options" :currentTheme="currentTheme" :themes="themes" />
         </div>
-        <OptionsInput v-model="options" />
+        <OptionsInput v-model="options" class="options-div" v-show="!spinnerStore.spinning"/>
     </div>
 </template>
 
 <style scoped>
-.spinner-div {
-    position: relative;
+.outer-div {
+    display: flex;
 }
 
-#theme-div {
+.spinner-div {
+    position: relative;
+    flex: 1;
+    width:100%;
+}
+
+.theme-div {
     position: absolute;
     width: 100%;
     display: flex;
@@ -60,8 +68,13 @@ getThemes();
     justify-content: space-between;
 }
 
-.menu-icon {
-    width: 2rem;
+@keyframes shrink {
+    0% {
+        width: 100%;
+    }
+    100% {
+       width: 10px;
+    }
 }
 
 </style>
