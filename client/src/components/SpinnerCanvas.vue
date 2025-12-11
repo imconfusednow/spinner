@@ -1,52 +1,42 @@
 <script setup>
-    import { ref, watch, useTemplateRef  } from 'vue';
+    import { onMounted, ref } from 'vue';
+    import { onBeforeRouteLeave } from 'vue-router';
     import { Wheel } from '@/js/wheel';
     import { Modal } from '@/js/modals';
-    import { watchOnce, onKeyStroke } from '@vueuse/core';
+    import { watchOnce, onKeyStroke, useRafFn } from '@vueuse/core';
     import { Canvas } from "@/js/canvas.js";
-    import {startAnimationLoop} from "@/js/utils.js";
     import { useSpinnerStore } from '@/stores/spinner';
 
     const spinnerStore = useSpinnerStore();
-        
+    let wheel = null;
+    const props = defineProps(['themes']);
 
-    let wheel = ref();
-    const props = defineProps(['options', 'currentTheme', 'themes']);
-
-    const outerDiv = useTemplateRef('outer-div');   
-    
+    let pause = ref(null);
 
     onKeyStroke(' ', (e) => {
+      if (e.target.id === 'options-input') {
+        return;
+      }
       e.preventDefault();
-      wheel.value.start();
-    }, {target: outerDiv});
-
-
-    watch(()=>props.options, ()=>{
-      if (!wheel.value) {
-        return;
-      }
-      wheel.value.updateOptions(props.options);
-      wheel.value.draw();
-    });
-
-    watch(()=>props.currentTheme, ()=>{
-      if (!wheel.value) {
-        return;
-      }
-      wheel.value.setCurrentTheme(props.currentTheme);
+      wheel.start();
     });
 
     watchOnce(()=>props.themes, ()=> {
-        const resultModal = new Modal({startOpen: false, classes: []});
-        resultModal.setHeaderText("Spinner Result");
-        const canvas = new Canvas('spinner-canvas');
-        wheel.value = new Wheel(canvas, props.options, resultModal, spinnerStore);        
-        wheel.value.setThemes(props.themes);
-        startAnimationLoop(()=>wheel.value.draw());
+        wheel.setThemes(props.themes);
+        ({pause} = useRafFn(()=>wheel.draw()));
     });
 
+    onMounted(() => {
+      const resultModal = new Modal({startOpen: false, classes: []});
+      resultModal.setHeaderText("Spinner Result");
+      const canvas = new Canvas('spinner-canvas');
+      wheel = new Wheel(canvas, resultModal, spinnerStore, Math.random());  
+    });
 
+    onBeforeRouteLeave(()=>{
+      pause();
+      wheel = null;
+    });
 </script>
 
 <template>
@@ -57,6 +47,7 @@
 
 <style scoped>
   .canvas-outer-div {
+    height: 100%;
       &:focus-visible {
         outline: none;
       }
@@ -65,6 +56,6 @@
   #spinner-canvas {
       display: block;
       width: 100%;
-      height: 100vh;      
+      height: 100%;
   }
 </style>

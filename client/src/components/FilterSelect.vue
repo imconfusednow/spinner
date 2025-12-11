@@ -30,7 +30,7 @@ const filteredOptions = computed(() => {
         if (!search.value) {
             return true;
         }
-        return fuzzyMatch(option.name, search.value);
+        return fuzzyMatch(option.label, search.value);
     });
 });
 
@@ -41,8 +41,8 @@ function setSearching() {
 }
 
 const closedText = computed(() => {
-    if (model.value) {
-        return model.value.name;
+    if (Object.keys(model.value).length !== 0) {
+        return model.value.label;
     }
     if (props.defaultText) {
         return props.defaultText;

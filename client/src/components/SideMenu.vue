@@ -16,19 +16,25 @@ onClickOutside( outerDiv, (event) => {
 
 <template>
     <div id="outer-div" ref="outer-div">
-        <button class="btn btn-light" @click="show = !show"><img src="/images/menu.svg" class="menu-icon" ></img></button>
-        <div id="inner-div" v-show="false">
-            <button class="btn btn-light" @click="show = !show"><img src="/images/menu.svg" class="menu-icon" ></img></button>
-            <div class="links-div">
-                <RouterLink to="/themes">Themes</RouterLink>
-                <RouterLink to="/animations">Animations</RouterLink>
+        <button class="btn btn-light" @click="show = !show"><img src="/images/menu.svg" class="menu-icon"></img></button>
+        <Transition>
+            <div id="inner-div" v-show="show">
+                <div class="close">
+                    <button @click="show = false">×</button>
+                </div>
+                <div class="links-div">
+                    <RouterLink to="/">Spinner</RouterLink>
+                    <RouterLink to="/themes">Themes</RouterLink>
+                    <RouterLink to="/animations">Animations</RouterLink>
+                </div>
             </div>
-        </div>
+        </Transition>
     </div>
 </template>
 
 <style scoped>
 button {
+    display: inline-block;
     &:hover {
         filter: brightness(0.8);
         cursor: pointer;
@@ -41,23 +47,73 @@ button {
 }
 
 .links-div {
-    margin-block: 2rem;
-    display: grid;
-    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+
+    a {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        color: #b9b9b9;
+        font-size: 1.5rem;
+
+        &:hover {
+            color: white;
+        }
+
+        &.router-link-active {
+            background: #535353;
+        }
+    }
+}
+
+.close {
+    display: flex;
+    width: 100%;
+    justify-content: right;
+    padding: 1rem;
+
+    button {
+        float: right;
+        font-size: 2rem;
+        background: none;
+        border: none;
+        color: white;
+    }
+    
 }
 
 #outer-div {
-    position: fixed;
+    z-index: 1000;
+    position: relative;
+    color: white;
 }
 
 #inner-div {
     position: fixed;
-    background: black;
+    background: #1c1b1b;
     top: 0;
     bottom: 0;
     left: 0;
-    min-width: 100px;
-    padding: 1rem;
+    min-width: 300px;
+    transition: all 0.2s;
+
+    &.v-enter-from {
+        opacity: 0;
+        translate: -100px 0;
+    }
+    &.v-enter-to {
+        opacity: 1;
+        translate: 0 0;
+    }
+    &.v-leave-from {
+        opacity: 1;
+        translate: 0 0;
+    }
+    &.v-leave-to {
+        opacity: 0;
+        translate: -100px 0;
+    }
 }
 
 </style>

@@ -1,8 +1,6 @@
 import { Router } from "express";
 import Joi from "joi";
 import { validate } from "../utils/functions.js";
-import * as fs from "fs/promises";
-import { themesPath } from "../utils/constants.js";
 import { db } from "../db/index.js";
 
 const router = Router();

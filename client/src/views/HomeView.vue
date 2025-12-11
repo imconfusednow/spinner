@@ -10,8 +10,7 @@ import { useSpinnerStore } from '@/stores/spinner';
 const spinnerStore = useSpinnerStore();
 
 const themes = ref([]);
-const options = ref([]);
-const currentTheme = ref(null);
+const randomTheme = {"label": "Random", "value": 999, colour: "#c79f2e"};
 
 
 async function getThemes() {
@@ -31,7 +30,7 @@ function parseThemes(themes) {
         theme.colour = ( DateTime.fromISO(theme.created_at.replace(" ", "T")) > DateTime.now().minus({weeks: 1}) ) ? 'green': '';
         theme.colours = ( theme.colours ) ? theme.colours.split(',') : '';
     }
-    return themes;
+    return [...[randomTheme], ...themes];
 }
 
 getThemes();
@@ -41,23 +40,26 @@ getThemes();
     <div class="outer-div">
         <div class="spinner-div">
             <div class="theme-div"> 
-                <FilterSelect v-model="currentTheme" :options="themes" defaultText="Choose Theme" style="margin-left: auto;"  v-show="!spinnerStore.spinning"/>                         
+                <FilterSelect v-model="spinnerStore.currentTheme" :options="themes" defaultText="Choose Theme" style="margin-left: auto;"  v-show="!spinnerStore.spinning"/>
             </div>
-            <SpinnerCanvas :options="options" :currentTheme="currentTheme" :themes="themes" />
+            <SpinnerCanvas :themes="themes" />
         </div>
-        <OptionsInput v-model="options" class="options-div" v-show="!spinnerStore.spinning"/>
+        <OptionsInput v-model="spinnerStore.options" class="options-div" v-show="!spinnerStore.spinning"/>
     </div>
 </template>
 
 <style scoped>
 .outer-div {
+    height: 100%;
     display: flex;
 }
 
 .spinner-div {
     position: relative;
+    min-width: 500px;
     flex: 1;
     width:100%;
+    height: 100%;
 }
 
 .theme-div {
@@ -66,6 +68,16 @@ getThemes();
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.options-div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: start;
+  padding-inline: 1rem;
+  flex-basis: 500px;
+  flex-shrink: 1;
 }
 
 @keyframes shrink {

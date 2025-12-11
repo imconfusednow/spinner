@@ -6,38 +6,41 @@ const optionsText = ref('');
 
 const model = defineModel();
 
-const parsedOptions = computed(() => {
-  if (optionsText.value === "") {
+function parseOptions(text) {
+  if (text === "") {
     return [];
   }
   let returnOptions = [];
 
-  for (let line of optionsText.value.split("\n")) {
+  for (let line of text.split("\n")) {
     if (line === "") {
       continue;
     }
     returnOptions.push(line);
   }
-
-  saveParams(returnOptions);
-
   return returnOptions;
-});
+}
 
 
 watch(optionsText, () => {
-  model.value = parsedOptions.value;
+  const parsedOptions = parseOptions(optionsText.value);
+  model.value = parsedOptions;
+  saveParams(parsedOptions);
 });
 
 const params = loadParams();
 if (params) {
   optionsText.value = params;
 }
+if (!optionsText.value) {
+  optionsText.value = model.value.join("\n")
+  saveParams(model.value);
+}
 
 </script>
 
 <template>
-  <div class="options-div">
+  <div>
     <textarea id="options-input" v-model="optionsText" placeholder="Type each option on a new line here :)"></textarea>
   </div>
 </template>
@@ -51,11 +54,4 @@ textarea {
   resize: none;
 }
 
-.options-div {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  align-items: start;
-  padding-inline: 1rem;
-}
 </style>

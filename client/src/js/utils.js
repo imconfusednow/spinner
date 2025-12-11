@@ -1,7 +1,11 @@
 import { EMOJI } from "@/js/constants.js";
 
+export function randomChoice(choices) {
+    return choices[Math.floor(Math.random() * choices.length)];
+}
+
 export function randomEmoji() {
-    return EMOJI[Math.floor(Math.random() * EMOJI.length)];
+    return randomChoice(EMOJI);
 }
 
 export function captureCTRL(key, callback) {
@@ -36,7 +40,6 @@ export async function startAnimationLoop(func) {
     function loop(timestamp) {
         func(timestamp);
         window.requestAnimationFrame(loop);
-        
     }
     window.requestAnimationFrame(loop);
 }    
