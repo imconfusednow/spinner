@@ -1,10 +1,12 @@
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { loadParams, saveParams } from '@/js/utils';
 
 const optionsText = ref('');
 
 const model = defineModel();
+const props = defineProps(['highlight']);
+const emit = defineEmits(['change']);
 
 function parseOptions(text) {
   if (text === "") {
@@ -26,6 +28,7 @@ watch(optionsText, () => {
   const parsedOptions = parseOptions(optionsText.value);
   model.value = parsedOptions;
   saveParams(parsedOptions);
+  emit('change');
 });
 
 const params = loadParams();
@@ -41,7 +44,7 @@ if (!optionsText.value) {
 
 <template>
   <div>
-    <textarea id="options-input" v-model="optionsText" placeholder="Type each option on a new line here :)"></textarea>
+    <textarea :class="{'highlight': highlight}" id="options-input" v-model="optionsText" placeholder="Type each option on a new line here :)"></textarea>
   </div>
 </template>
 
@@ -53,5 +56,22 @@ textarea {
   font-size: 1.7rem;
   resize: none;
 }
+
+.highlight {
+    outline: orange solid;
+    animation: flash 0.9s infinite linear;
+}
+
+ @keyframes flash {
+    0% {
+        filter: brightness(0.9);
+    }
+    50% {
+        filter: brightness(1.5);
+    }
+    100% {
+        filter: brightness(0.9);
+    }
+ }
 
 </style>

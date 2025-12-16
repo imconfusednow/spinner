@@ -57,5 +57,13 @@
       display: block;
       width: 100%;
       height: 100%;
+
+      /* animation: spinspin 2s linear infinite forwards; */
+  }
+
+  @keyframes spinspin {
+    100% {
+      transform: rotate3d(1, 1,0, 360deg);
+    }
   }
 </style>

@@ -1,12 +1,11 @@
-import { showToast } from "@/js/modals.js";
 import * as utils from "@/js/utils.js";
 import { COLOURS, FULLROTATION } from "@/js/constants.js";
-import { useMouse, useTitle } from "@vueuse/core";
+import { useMouse, useTitle, useEventBus } from "@vueuse/core";
 import { storeToRefs } from 'pinia';
 
 const { x, y } = useMouse();
 const title = useTitle();
-
+const eventBus = useEventBus('user-error');
 
 export class Wheel {
   DECELERATION = 0.993;
@@ -48,7 +47,6 @@ export class Wheel {
 
   updateOptions(options) {
     this.options.value = options;
-    this.span = this.calculateSpan();
   }
 
   setupButton() {
@@ -62,9 +60,10 @@ export class Wheel {
   }
 
   draw() {
-    console.log(this.wheelId)
     const [width, height] = this.canvas.startStep();
-    this.setDimensions(width, height);    
+    this.setDimensions(width, height);
+
+    this.span = this.calculateSpan();
 
     const selectionChanged = this.calculateCurrentSelection();
     this.rotateStep();
@@ -134,11 +133,13 @@ export class Wheel {
       return;
     }
     if (!this.currentTheme.value?.label) {
-      showToast("Please select a theme", 3000, ["warning"]);
+      const payload = {"message": "Please select a theme", "timeout": 3000, "classes": ["warning"]}
+      eventBus.emit("no_theme", payload);
       return;
     }
     if (this.options.value.length === 0) {
-      showToast("Please add at least one option", 3000, ["warning"]);
+      const payload = {"message": "Please add at least one option", "timeout": 3000, "classes": ["warning"]}
+      eventBus.emit("no_options", payload);
       return;
     }
     title.value = "Spinner";
@@ -171,7 +172,8 @@ export class Wheel {
   }
 
   bonusSpin() {
-    showToast("b-b-b-bonus spin!!!");
+    const payload = {"message": "B-b-b-bonus Spin!", "timeout": 3000}
+    eventBus.emit("no_theme", payload);
     this.speed += 0.1;
   }
 
@@ -181,23 +183,22 @@ export class Wheel {
     }
 
     const sliceColour = this.getColour(index);
-    const span = FULLROTATION / this.options.value.length;
-    const startAngle = index * span + this.rotation;
+    const startAngle = index * this.span + this.rotation;
 
     this.canvas.drawSegment(
       this.x,
       this.y,
       sliceColour,
       startAngle,
-      span,
+      this.span,
       this.radius,
       this.buttonSize(),
       this.gap
     );
 
-    const x = this.x + Math.cos(startAngle + span / 2) * this.radius;
-    const y = this.y + Math.sin(startAngle + span / 2) * this.radius;
-    const rot = startAngle + span / 2;
+    const x = this.x + Math.cos(startAngle + this.span / 2) * this.radius;
+    const y = this.y + Math.sin(startAngle + this.span / 2) * this.radius;
+    const rot = startAngle + this.span / 2;
 
     const text = this.options.value[index];
 
@@ -298,7 +299,7 @@ export class Wheel {
   calculateCurrentSelection() {
     let changed = false;
     const selection =
-      this.options.value.length - Math.floor(this.rotation / this.span) - 1;
+      this.options.value.length - 1 - Math.floor(this.rotation / this.span);
 
     if (selection !== this.currentSelection) {
       if (this.currentSelection !== "") {
@@ -397,14 +398,12 @@ export class Wheel {
     this.x = this.originalX;
     this.y = this.originalY;
     this.radius = this.originalRadius;
-    
   }
 
   removeOption(name) {
     this.options.value = this.options.value.filter((option) => {
       return option !== name;
     });
-    this.span = this.calculateSpan();
   }
 
   randomSpeed() {

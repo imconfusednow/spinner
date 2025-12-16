@@ -1,5 +1,6 @@
 *, *:before, *:after {
     box-sizing: border-box;
+    color-scheme: dark;
 }
 
 @font-face {
@@ -61,7 +62,7 @@ a {
 }
 
 .btn-light {
-    background-color: #e8e1e1;
+    background-color: #c7c5c5;
     color: black;
 }
 

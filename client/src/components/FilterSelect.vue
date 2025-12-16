@@ -3,8 +3,9 @@ import { computed, ref, useTemplateRef, nextTick } from 'vue';
 import { onClickOutside, onKeyStroke } from '@vueuse/core';
 import { fuzzyMatch } from '@/js/utils.js'
 
-const props = defineProps(['options', 'defaultText']);
+const props = defineProps(['options', 'defaultText', 'highlight']);
 const model = defineModel();
+const emit = defineEmits(['change']);
 
 const search = ref('');
 const searching = ref(false);
@@ -23,6 +24,7 @@ function handleSelected(optionValue) {
     model.value = optionValue;
     searching.value = false;
     search.value = '';
+    emit('change');
 }
 
 const filteredOptions = computed(() => {
@@ -56,7 +58,7 @@ const closedText = computed(() => {
     <div class="outer-div">
         <input v-model="search" v-show="searching" class="search-box" placeholder="Search themes" ref="search-box" />
         <input v-model="model" hidden />
-        <button class="option-button" @click="setSearching" v-show="!searching">{{ closedText }}<span class="dropdown-v">V</span></button>
+        <button class="option-button" @click="setSearching" v-show="!searching" :class="{'highlight': highlight}">{{ closedText }}<span class="dropdown-v">V</span></button>
         <div class="pretend-select" v-show="searching">
             <button v-for="option in filteredOptions" class="option-button" @click="handleSelected(option)"
                 :key="option.value" :style="{ backgroundColor: option.colour }">{{ option.label }}</button>
@@ -92,6 +94,9 @@ const closedText = computed(() => {
     position: absolute;
     width: 100%;
     top: 100%;
+    max-height: calc(100vh - 1.5rem - 50px);
+    overflow: auto;
+    max-width: 250px;
 
     .option-button {
         border-top: solid #223548 1px;
@@ -115,7 +120,6 @@ const closedText = computed(() => {
     color: white;
     border: none;
     width: 100%;
-    max-width: 250px;
     font-size: 1.4rem;
     min-height: 55px;
     text-align: left;
@@ -133,5 +137,22 @@ const closedText = computed(() => {
 .dropdown-v {
     font-size: 0.8rem;
 }
+
+.highlight {
+    outline: orange solid;
+    animation: flash 0.9s infinite linear;
+}
+
+ @keyframes flash {
+    0% {
+        filter: brightness(0.9);
+    }
+    50% {
+        filter: brightness(1.5);
+    }
+    100% {
+        filter: brightness(0.9);
+    }
+ }
 
 </style>
