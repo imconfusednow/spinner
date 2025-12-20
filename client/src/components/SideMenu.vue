@@ -7,18 +7,18 @@ const show = ref(false);
 
 const outerDiv = useTemplateRef('outer-div');
 
-
-onClickOutside( outerDiv, (event) => {
+onClickOutside(outerDiv, (event) => {
     show.value = false;
 });
-
 </script>
 
 <template>
     <div id="outer-div" ref="outer-div">
-        <button class="btn btn-light" @click="show = !show"><img src="/images/menu.svg" class="menu-icon"></img></button>
+        <button class="btn btn-light" @click="show = !show">
+            <img src="/images/menu.svg" class="menu-icon" />
+        </button>
         <Transition>
-            <div id="inner-div" v-show="show">
+            <div v-show="show" id="inner-div">
                 <div class="close">
                     <button @click="show = false">×</button>
                 </div>
@@ -35,6 +35,7 @@ onClickOutside( outerDiv, (event) => {
 <style scoped>
 button {
     display: inline-block;
+
     &:hover {
         filter: brightness(0.8);
         cursor: pointer;
@@ -80,7 +81,6 @@ button {
         border: none;
         color: white;
     }
-    
 }
 
 #outer-div {
@@ -98,24 +98,25 @@ button {
     min-width: 300px;
     transition: all 0.2s;
     filter: drop-shadow(10px 0 10px black);
-    shadow
 
-    &.v-enter-from {
+    shadow &.v-enter-from {
         opacity: 0;
         translate: -100px 0;
     }
+
     &.v-enter-to {
         opacity: 1;
         translate: 0 0;
     }
+
     &.v-leave-from {
         opacity: 1;
         translate: 0 0;
     }
+
     &.v-leave-to {
         opacity: 0;
         translate: -100px 0;
     }
 }
-
 </style>

@@ -3,15 +3,19 @@ import { computed, ref, useTemplateRef, nextTick } from 'vue';
 import { onClickOutside, onKeyStroke } from '@vueuse/core';
 import { fuzzyMatch } from '@/js/utils.js';
 
-const props = defineProps(['options', 'defaultText', 'highlight']);
-const model = defineModel();
+const props = defineProps({
+    options: { type: Array, required: true },
+    defaultText: { type: String, default: '' },
+    highlight: { type: Boolean, default: false },
+});
+const model = defineModel({ type: Object });
 const emit = defineEmits(['change']);
 
 const search = ref('');
 const searching = ref(false);
 const searchBox = useTemplateRef('search-box');
 
-onClickOutside(searchBox, (event) => {
+onClickOutside(searchBox, () => {
     searching.value = false;
 });
 
@@ -59,28 +63,28 @@ const closedText = computed(() => {
 <template>
     <div class="outer-div">
         <input
-            v-model="search"
             v-show="searching"
+            ref="search-box"
+            v-model="search"
             class="search-box"
             placeholder="Search themes"
-            ref="search-box"
         />
         <input v-model="model" hidden />
         <button
-            class="option-button"
-            @click="setSearching"
             v-show="!searching"
+            class="option-button"
             :class="{ highlight: highlight }"
+            @click="setSearching"
         >
             {{ closedText }}<span class="dropdown-v">V</span>
         </button>
-        <div class="pretend-select" v-show="searching">
+        <div v-show="searching" class="pretend-select">
             <button
                 v-for="option in filteredOptions"
-                class="option-button"
-                @click="handleSelected(option)"
                 :key="option.value"
+                class="option-button"
                 :style="{ backgroundColor: option.colour }"
+                @click="handleSelected(option)"
             >
                 {{ option.label }}
             </button>

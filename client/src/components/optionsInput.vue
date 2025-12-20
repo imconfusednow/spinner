@@ -4,8 +4,10 @@ import { loadParams, saveParams } from '@/js/utils';
 
 const optionsText = ref('');
 
-const model = defineModel();
-const props = defineProps(['highlight']);
+const model = defineModel({ type: Array });
+const props = defineProps({
+    highlight: { type: Boolean, default: false },
+});
 const emit = defineEmits(['change']);
 
 function parseOptions(text) {
@@ -43,9 +45,9 @@ if (!optionsText.value) {
 <template>
     <div>
         <textarea
-            :class="{ highlight: highlight }"
             id="options-input"
             v-model="optionsText"
+            :class="{ highlight: highlight }"
             placeholder="Type each option on a new line here :)"
         ></textarea>
     </div>

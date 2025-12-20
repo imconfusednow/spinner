@@ -88,7 +88,7 @@ watch(
                 </button>
             </div>
         </div>
-        <SpinnerCanvas :themes="[]" class="spinner" :captureSpace="false" />
+        <SpinnerCanvas :themes="[]" class="spinner" :capture-space="false" />
     </div>
 </template>
 

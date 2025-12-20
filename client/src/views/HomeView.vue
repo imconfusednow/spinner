@@ -4,7 +4,6 @@ import { showToast } from '@/js/modals';
 import OptionsInput from '@/components/OptionsInput.vue';
 import SpinnerCanvas from '@/components/SpinnerCanvas.vue';
 import FilterSelect from '@/components/FilterSelect.vue';
-import { DateTime } from 'luxon';
 import { useSpinnerStore } from '@/stores/spinner';
 import { useEventBus } from '@vueuse/core';
 
@@ -31,21 +30,21 @@ function onUserError(name, payload) {
         <div class="spinner-div">
             <div class="theme-div">
                 <FilterSelect
+                    v-show="!spinnerStore.spinning"
                     v-model="spinnerStore.currentTheme"
                     :options="spinnerStore.themes"
                     :highlight="hightlightSelect"
-                    @change="hightlightSelect = false"
-                    defaultText="Choose Theme"
+                    default-text="Choose Theme"
                     class="theme-select"
-                    v-show="!spinnerStore.spinning"
+                    @change="hightlightSelect = false"
                 />
             </div>
-            <SpinnerCanvas :captureSpace="true" />
+            <SpinnerCanvas :capture-space="true" />
         </div>
         <OptionsInput
+            v-show="!spinnerStore.spinning"
             v-model="spinnerStore.options"
             class="options-div"
-            v-show="!spinnerStore.spinning"
             :highlight="highlightOptions"
             @change="highlightOptions = false"
         />

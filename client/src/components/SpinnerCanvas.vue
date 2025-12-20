@@ -7,7 +7,9 @@ import { onKeyStroke, useRafFn } from '@vueuse/core';
 import { Canvas } from '@/js/canvas.js';
 import { useSpinnerStore } from '@/stores/spinner';
 
-const props = defineProps(['captureSpace']);
+const props = defineProps({
+    captureSpace: Boolean,
+});
 const spinnerStore = useSpinnerStore();
 let wheel = null;
 
@@ -38,7 +40,7 @@ onBeforeRouteLeave(() => {
 </script>
 
 <template>
-    <div class="canvas-outer-div" ref="outer-div" tabindex="2">
+    <div ref="outer-div" class="canvas-outer-div" tabindex="2">
         <canvas id="spinner-canvas">Couldn't load canvas</canvas>
     </div>
 </template>

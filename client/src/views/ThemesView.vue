@@ -22,7 +22,7 @@ const filteredThemes = computed(() => {
         <h1>Theme Management</h1>
         <div class="filter-div">
             <div class="input-div">
-                <input placeholder="Name Search" v-model="search" />
+                <input v-model="search" placeholder="Name Search" />
             </div>
             <button class="btn btn-green" @click="$router.push('/themes/new')">
                 New Theme +
@@ -41,7 +41,7 @@ const filteredThemes = computed(() => {
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="theme in filteredThemes">
+                <tr v-for="theme in filteredThemes" :key="theme.value">
                     <td>{{ theme.label }}</td>
                     <td><img :src="`${theme.image}`" /></td>
                     <td><audio controls :src="`${theme.music}`"></audio></td>
