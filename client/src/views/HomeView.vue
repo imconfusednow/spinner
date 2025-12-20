@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue';
-import { apiFetch } from '@/js/utils.js';
 import { showToast } from '@/js/modals';
 import OptionsInput from '@/components/OptionsInput.vue';
 import SpinnerCanvas from '@/components/SpinnerCanvas.vue';
@@ -13,31 +12,9 @@ const spinnerStore = useSpinnerStore();
 const eventBus = useEventBus('user-error');
 eventBus.on(onUserError);
 
-const themes = ref([]);
 const hightlightSelect = ref(false);
 const highlightOptions = ref(false);
-const randomTheme = {"label": "Random", "value": 999, colour: "#c79f2e"};
 
-
-async function getThemes() {
-    const url = "/api/themes";
-    try {
-        const response = await apiFetch(url);        
-        themes.value = parseThemes(response);
-    } catch (error) {
-        console.error(error.message);
-    }
-}
-
-function parseThemes(themes) {
-    for (let theme of themes) {
-        theme.value = theme.id;
-        theme.label = theme.name;
-        theme.colour = ( DateTime.fromISO(theme.created_at.replace(" ", "T")) > DateTime.now().minus({weeks: 1}) ) ? 'green': '';
-        theme.colours = ( theme.colours ) ? theme.colours.split(',') : '';
-    }
-    return [...[randomTheme], ...themes];
-}
 
 function onUserError(name, payload) {
     showToast(payload.message, payload.timeout, payload.classes);
@@ -49,16 +26,15 @@ function onUserError(name, payload) {
     }
 }
 
-getThemes();
 </script>
 
 <template>
     <div class="outer-div">
         <div class="spinner-div">
             <div class="theme-div"> 
-                <FilterSelect v-model="spinnerStore.currentTheme" :options="themes" :highlight="hightlightSelect" @change="hightlightSelect = false" defaultText="Choose Theme" class="theme-select" v-show="!spinnerStore.spinning"/>
+                <FilterSelect v-model="spinnerStore.currentTheme" :options="spinnerStore.themes" :highlight="hightlightSelect" @change="hightlightSelect = false" defaultText="Choose Theme" class="theme-select" v-show="!spinnerStore.spinning"/>
             </div>
-            <SpinnerCanvas :themes="themes" />
+            <SpinnerCanvas :captureSpace="true" />
         </div>
         <OptionsInput v-model="spinnerStore.options" class="options-div" v-show="!spinnerStore.spinning" :highlight="highlightOptions" @change="highlightOptions = false"/>
     </div>

@@ -10,6 +10,7 @@
     "start": "npm run build --prefix client && npm run start --prefix server"
   },
   "devDependencies": {
-    "concurrently": "^8.0.0"
+    "concurrently": "^8.0.0",
+    "prettier": "^3.7.4"
   }
 }

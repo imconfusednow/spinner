@@ -3,34 +3,32 @@
     import { onBeforeRouteLeave } from 'vue-router';
     import { Wheel } from '@/js/wheel';
     import { Modal } from '@/js/modals';
-    import { watchOnce, onKeyStroke, useRafFn } from '@vueuse/core';
+    import { onKeyStroke, useRafFn } from '@vueuse/core';
     import { Canvas } from "@/js/canvas.js";
     import { useSpinnerStore } from '@/stores/spinner';
 
+    const props = defineProps(['captureSpace']);
     const spinnerStore = useSpinnerStore();
     let wheel = null;
-    const props = defineProps(['themes']);
 
     let pause = ref(null);
 
-    onKeyStroke(' ', (e) => {
-      if (e.target.id === 'options-input') {
-        return;
-      }
-      e.preventDefault();
-      wheel.start();
-    });
-
-    watchOnce(()=>props.themes, ()=> {
-        wheel.setThemes(props.themes);
-        ({pause} = useRafFn(()=>wheel.draw()));
-    });
+    if (props.captureSpace) {
+      onKeyStroke(' ', (e) => {
+        if (e.target.id === 'options-input') {
+          return;
+        }
+        e.preventDefault();
+        wheel.start();
+      });
+  }
 
     onMounted(() => {
       const resultModal = new Modal({startOpen: false, classes: []});
       resultModal.setHeaderText("Spinner Result");
       const canvas = new Canvas('spinner-canvas');
-      wheel = new Wheel(canvas, resultModal, spinnerStore, Math.random());  
+      wheel = new Wheel(canvas, resultModal, spinnerStore, Math.random());
+      ({pause} = useRafFn(()=>wheel.draw()));
     });
 
     onBeforeRouteLeave(()=>{

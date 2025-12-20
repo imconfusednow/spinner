@@ -24,8 +24,8 @@ onClickOutside( outerDiv, (event) => {
                 </div>
                 <div class="links-div">
                     <RouterLink to="/">Spinner</RouterLink>
-                    <RouterLink to="/themes">Themes</RouterLink>
-                    <RouterLink to="/animations">Animations</RouterLink>
+                    <RouterLink to="/themes">Manage Themes</RouterLink>
+                    <RouterLink to="/animations">Manage Animations</RouterLink>
                 </div>
             </div>
         </Transition>
@@ -97,6 +97,8 @@ button {
     left: 0;
     min-width: 300px;
     transition: all 0.2s;
+    filter: drop-shadow(10px 0 10px black);
+    shadow
 
     &.v-enter-from {
         opacity: 0;

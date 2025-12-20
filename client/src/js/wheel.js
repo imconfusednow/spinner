@@ -13,13 +13,13 @@ export class Wheel {
   STATICSPEED = 0.005;
   AUDIOCTX = new (window.AudioContext || window.webkitAudioContext)();
   constructor(canvas, resultModal, spinnerStore, wheelId) {
-    const { currentTheme, options, spinning } = storeToRefs(spinnerStore);
+    const { currentTheme, options, spinning, themes } = storeToRefs(spinnerStore);
     this.canvas = canvas
     this.originalRadius = 0;
     this.radius = 0;
     this.padding = 40;
     this.gap = 12;
-    this.themes = [];
+    this.themes = themes;
     this.setupButton();
     this.rotation = Math.random() * FULLROTATION;
     this.direction = this.chooseDirection();
@@ -33,9 +33,9 @@ export class Wheel {
     this.sounds = {};
     this.images = {};
     //Keeps the sound buffer 'warm' so sound don't become quiet
-    this.loadSound("silence.mp3", "silence");
+    this.loadSound("/sounds/silence.mp3", "silence");
     this.playSound("silence", { loop: true, volume: 0.01 });
-    this.clickSound = this.loadSound("click.wav", "click");
+    this.clickSound = this.loadSound("/sounds/click.wav", "click");
     this.resultModal = resultModal;
     this.clickTimer = 0;
     this.currentTheme = currentTheme;
@@ -148,23 +148,19 @@ export class Wheel {
     this.spinTime = 0;
     this.speed = speed;
     this.direction = this.chooseDirection();
-    this.loadSound(`themes/${this.currentTheme.value?.music}`, "music");
+    this.loadSound(`${this.currentTheme.value?.music}`, "music");
     this.playSound("music");
   }
 
   start() {
     if (this.currentTheme.value?.label === "Random") {
-      this.setCurrentTheme(utils.randomChoice(this.themes));
+      this.setCurrentTheme(utils.randomChoice(this.themes.value));
     }
     this.spin(this.randomSpeed());
   }
 
   chooseDirection() {
     return Math.random() < 0.5 ? 1 : -1;
-  }
-
-  setThemes(themes) {
-    this.themes = themes;
   }
 
   setCurrentTheme(theme) {
@@ -288,12 +284,12 @@ export class Wheel {
   }
 
   getCurrentImageDetails() {
-    const currentTheme = (this.currentTheme.value?.label === 'Random') ? utils.randomChoice(this.themes) : this.currentTheme.value;
+    const currentTheme = (this.currentTheme.value?.label === 'Random') ? utils.randomChoice(this.themes.value) : this.currentTheme.value;
     if (currentTheme?.image) {
-      return [`themes/${currentTheme.image}`, currentTheme.label];
+      return [`${currentTheme.image}`, currentTheme.label];
     }
 
-    return ['spin.svg', 'default'];
+    return ['/images/spin.svg', 'default'];
   }
 
   calculateCurrentSelection() {
@@ -316,7 +312,7 @@ export class Wheel {
       return this.images[name];
     }
     const img = document.createElement("img");
-    img.src = `/images/${file}`;
+    img.src = `${file}`;
     img.style.transformOrigin = "center";
     this.images[name] = img;
     return img;
@@ -326,7 +322,7 @@ export class Wheel {
     if (this.sounds[name]) {
       return this.sounds[name];
     }
-    const sound = new Audio(`/sounds/${file}`);
+    const sound = new Audio(`${file}`);
     sound.preload = "auto";
     sound.load();
     this.sounds[name] = sound;
@@ -370,7 +366,7 @@ export class Wheel {
 
     this.resultModal.show();
     this.stopSound("music");
-    this.loadSound(`themes/${this.currentTheme.value?.ending}`, "ending");
+    this.loadSound(`${this.currentTheme.value?.ending}`, "ending");
     this.playSound("ending", { loop: false, stopAfter: 5000 });
     this.setCurrentTheme({});
     this.resetState();
