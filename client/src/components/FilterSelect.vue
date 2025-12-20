@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, useTemplateRef, nextTick } from 'vue';
 import { onClickOutside, onKeyStroke } from '@vueuse/core';
-import { fuzzyMatch } from '@/js/utils.js'
+import { fuzzyMatch } from '@/js/utils.js';
 
 const props = defineProps(['options', 'defaultText', 'highlight']);
 const model = defineModel();
@@ -11,14 +11,17 @@ const search = ref('');
 const searching = ref(false);
 const searchBox = useTemplateRef('search-box');
 
-
-onClickOutside( searchBox, (event) => {
+onClickOutside(searchBox, (event) => {
     searching.value = false;
 });
 
-onKeyStroke('Enter', (e) => {
-  handleSelected(filteredOptions.value[0]);
-}, { target: searchBox });
+onKeyStroke(
+    'Enter',
+    (e) => {
+        handleSelected(filteredOptions.value[0]);
+    },
+    { target: searchBox },
+);
 
 function handleSelected(optionValue) {
     model.value = optionValue;
@@ -39,7 +42,7 @@ const filteredOptions = computed(() => {
 function setSearching() {
     searching.value = true;
     search.value = '';
-    nextTick(()=>searchBox.value.focus());
+    nextTick(() => searchBox.value.focus());
 }
 
 const closedText = computed(() => {
@@ -51,17 +54,36 @@ const closedText = computed(() => {
     }
     return 'Select Option';
 });
-
 </script>
 
 <template>
     <div class="outer-div">
-        <input v-model="search" v-show="searching" class="search-box" placeholder="Search themes" ref="search-box" />
+        <input
+            v-model="search"
+            v-show="searching"
+            class="search-box"
+            placeholder="Search themes"
+            ref="search-box"
+        />
         <input v-model="model" hidden />
-        <button class="option-button" @click="setSearching" v-show="!searching" :class="{'highlight': highlight}">{{ closedText }}<span class="dropdown-v">V</span></button>
+        <button
+            class="option-button"
+            @click="setSearching"
+            v-show="!searching"
+            :class="{ highlight: highlight }"
+        >
+            {{ closedText }}<span class="dropdown-v">V</span>
+        </button>
         <div class="pretend-select" v-show="searching">
-            <button v-for="option in filteredOptions" class="option-button" @click="handleSelected(option)"
-                :key="option.value" :style="{ backgroundColor: option.colour }">{{ option.label }}</button>
+            <button
+                v-for="option in filteredOptions"
+                class="option-button"
+                @click="handleSelected(option)"
+                :key="option.value"
+                :style="{ backgroundColor: option.colour }"
+            >
+                {{ option.label }}
+            </button>
         </div>
     </div>
 </template>
@@ -143,7 +165,7 @@ const closedText = computed(() => {
     animation: flash 0.9s infinite linear;
 }
 
- @keyframes flash {
+@keyframes flash {
     0% {
         filter: brightness(0.9);
     }
@@ -153,6 +175,5 @@ const closedText = computed(() => {
     100% {
         filter: brightness(0.9);
     }
- }
-
+}
 </style>

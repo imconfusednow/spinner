@@ -16,16 +16,15 @@ export class Canvas {
         let canvas;
         if (canvasId) {
             canvas = document.getElementById(canvasId);
-        }
-        else {
+        } else {
             canvas = document.createElement('canvas');
         }
-        const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext('2d');
 
-        ctx.textBaseline = "alphabetic";
-        ctx.textAlign = "center";
-        ctx.font = "50px Roboto";
-        ctx.lineWidth = 2;        
+        ctx.textBaseline = 'alphabetic';
+        ctx.textAlign = 'center';
+        ctx.font = '50px Roboto';
+        ctx.lineWidth = 2;
 
         return [canvas, ctx];
     }
@@ -43,25 +42,54 @@ export class Canvas {
         return [width, height];
     }
 
-    drawSegment(x, y, fillColour, startAngle, span, radius, innerRadius, margin) {
+    drawSegment(
+        x,
+        y,
+        fillColour,
+        startAngle,
+        span,
+        radius,
+        innerRadius,
+        margin,
+    ) {
         this.ctx.fillStyle = fillColour;
 
         this.ctx.beginPath();
-        
-        const theta = ( Math.PI / 2 ) - Math.acos(margin / (2 * radius));
-        const phi = ( Math.PI / 2 ) - Math.acos(margin / (2 * (innerRadius + margin)));
 
-        this.ctx.arc(x, y, radius, startAngle + theta, startAngle + span - theta, false);
-        this.ctx.arc(x, y, innerRadius + margin, startAngle + span - phi, startAngle + phi, true);
-   
+        const theta = Math.PI / 2 - Math.acos(margin / (2 * radius));
+        const phi =
+            Math.PI / 2 - Math.acos(margin / (2 * (innerRadius + margin)));
+
+        this.ctx.arc(
+            x,
+            y,
+            radius,
+            startAngle + theta,
+            startAngle + span - theta,
+            false,
+        );
+        this.ctx.arc(
+            x,
+            y,
+            innerRadius + margin,
+            startAngle + span - phi,
+            startAngle + phi,
+            true,
+        );
+
         this.ctx.stroke();
-        this.ctx.fill();        
+        this.ctx.fill();
     }
 
     drawText(text, size, colour, x, y, rotation, margin, align) {
         this.ctx.save();
         this.fakeCtx.save();
-        this.fakeCtx.clearRect(0, 0, this.fakeCanvas.width, this.fakeCanvas.height);
+        this.fakeCtx.clearRect(
+            0,
+            0,
+            this.fakeCanvas.width,
+            this.fakeCanvas.height,
+        );
 
         this.ctx.translate(x, y);
         this.ctx.rotate(rotation);
@@ -70,11 +98,14 @@ export class Canvas {
         const measturedText = this.fakeCtx.measureText(text);
 
         this.fakeCtx.canvas.width = measturedText.width;
-        this.fakeCtx.canvas.height = measturedText.actualBoundingBoxAscent + measturedText.actualBoundingBoxDescent + 50; // Doesn't quite work, give some leeway
+        this.fakeCtx.canvas.height =
+            measturedText.actualBoundingBoxAscent +
+            measturedText.actualBoundingBoxDescent +
+            50; // Doesn't quite work, give some leeway
         this.fakeCtx.font = `${size}px Roboto`;
         this.fakeCtx.textAlign = 'left';
         this.fakeCtx.textBaseline = 'middle';
-        
+
         this.fakeCtx.fillStyle = colour;
 
         let widthOffset = margin;
@@ -83,9 +114,15 @@ export class Canvas {
         }
 
         this.fakeCtx.fillText(text, 0, this.fakeCtx.canvas.height / 2);
-        this.ctx.drawImage(this.fakeCtx.canvas, widthOffset, -this.fakeCtx.canvas.height / 2, this.fakeCtx.canvas.width, this.fakeCtx.canvas.height);        
+        this.ctx.drawImage(
+            this.fakeCtx.canvas,
+            widthOffset,
+            -this.fakeCtx.canvas.height / 2,
+            this.fakeCtx.canvas.width,
+            this.fakeCtx.canvas.height,
+        );
 
         this.ctx.restore();
         this.fakeCtx.restore();
-    }   
+    }
 }

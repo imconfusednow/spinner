@@ -1,4 +1,4 @@
-import { EMOJI } from "@/js/constants.js";
+import { EMOJI } from '@/js/constants.js';
 
 export function randomChoice(choices) {
     return choices[Math.floor(Math.random() * choices.length)];
@@ -9,17 +9,21 @@ export function randomEmoji() {
 }
 
 export function captureCTRL(key, callback) {
-    document.addEventListener('keydown', e => {
+    document.addEventListener('keydown', (e) => {
         if (e.ctrlKey && e.key === key) {
             e.preventDefault();
-            callback();            
+            callback();
         }
     });
 }
 
 export function saveParams(options) {
     const params = new URLSearchParams(document.location.search);
-    const optionsString = options.map((option)=>{return option}).join(',');
+    const optionsString = options
+        .map((option) => {
+            return option;
+        })
+        .join(',');
     params.set('options', optionsString);
 
     const newUrl = `${window.location.pathname}?${params.toString()}`;
@@ -28,11 +32,11 @@ export function saveParams(options) {
 
 export function loadParams() {
     const params = new URLSearchParams(document.location.search);
-    const optionsString = params.get("options");
+    const optionsString = params.get('options');
     if (!optionsString) {
         return;
     }
-    const splitOptions = optionsString.split(",").join("\n");
+    const splitOptions = optionsString.split(',').join('\n');
     return splitOptions;
 }
 
@@ -42,9 +46,9 @@ export async function startAnimationLoop(func) {
         window.requestAnimationFrame(loop);
     }
     window.requestAnimationFrame(loop);
-}    
+}
 
-export async function apiFetch(path, method="get") {
+export async function apiFetch(path, method = 'get') {
     const protocol = window.location.protocol;
     const hostname = window.location.hostname;
     const port = window.location.port;
@@ -54,12 +58,12 @@ export async function apiFetch(path, method="get") {
     if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
     }
-    return await response.json();    
+    return await response.json();
 }
 
 export function fuzzyMatch(string, search) {
     if (string == null) {
-        string = "";
+        string = '';
     }
     return string.toLowerCase().includes(search.toLowerCase());
 }

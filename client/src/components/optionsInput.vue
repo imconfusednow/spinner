@@ -9,52 +9,55 @@ const props = defineProps(['highlight']);
 const emit = defineEmits(['change']);
 
 function parseOptions(text) {
-  if (text === "") {
-    return [];
-  }
-  let returnOptions = [];
-
-  for (let line of text.split("\n")) {
-    if (line === "") {
-      continue;
+    if (text === '') {
+        return [];
     }
-    returnOptions.push(line);
-  }
-  return returnOptions;
+    let returnOptions = [];
+
+    for (let line of text.split('\n')) {
+        if (line === '') {
+            continue;
+        }
+        returnOptions.push(line);
+    }
+    return returnOptions;
 }
 
-
 watch(optionsText, () => {
-  const parsedOptions = parseOptions(optionsText.value);
-  model.value = parsedOptions;
-  saveParams(parsedOptions);
-  emit('change');
+    const parsedOptions = parseOptions(optionsText.value);
+    model.value = parsedOptions;
+    saveParams(parsedOptions);
+    emit('change');
 });
 
 const params = loadParams();
 if (params) {
-  optionsText.value = params;
+    optionsText.value = params;
 }
 if (!optionsText.value) {
-  optionsText.value = model.value.join("\n")
-  saveParams(model.value);
+    optionsText.value = model.value.join('\n');
+    saveParams(model.value);
 }
-
 </script>
 
 <template>
-  <div>
-    <textarea :class="{'highlight': highlight}" id="options-input" v-model="optionsText" placeholder="Type each option on a new line here :)"></textarea>
-  </div>
+    <div>
+        <textarea
+            :class="{ highlight: highlight }"
+            id="options-input"
+            v-model="optionsText"
+            placeholder="Type each option on a new line here :)"
+        ></textarea>
+    </div>
 </template>
 
 <style scoped>
 textarea {
-  flex-grow: 1;
-  width: 100%;
-  padding: 1rem;
-  font-size: 1.7rem;
-  resize: none;
+    flex-grow: 1;
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.7rem;
+    resize: none;
 }
 
 .highlight {
@@ -62,7 +65,7 @@ textarea {
     animation: flash 0.9s infinite linear;
 }
 
- @keyframes flash {
+@keyframes flash {
     0% {
         filter: brightness(0.9);
     }
@@ -72,6 +75,5 @@ textarea {
     100% {
         filter: brightness(0.9);
     }
- }
-
+}
 </style>

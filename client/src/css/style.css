@@ -1,4 +1,6 @@
-*, *:before, *:after {
+*,
+*:before,
+*:after {
     box-sizing: border-box;
     color-scheme: dark;
 }
@@ -43,7 +45,7 @@ a {
     &:hover {
         filter: brightness(0.8);
         cursor: pointer;
-    } 
+    }
 }
 
 .btn-blue {
@@ -80,7 +82,7 @@ a {
     color: white;
     width: 50svw;
     height: 30svh;
-    
+
     &::backdrop {
         background: #0f0f0f;
         opacity: 0.8;
@@ -93,8 +95,8 @@ a {
     .head-div {
         font-size: 1.5rem;
         padding: 0.9rem;
-        background-color: #004774
-    };
+        background-color: #004774;
+    }
 
     .body-div {
         display: flex;
@@ -114,7 +116,7 @@ a {
             white-space: nowrap;
             flex: 1;
             max-width: 150px;
-        }        
+        }
     }
 }
 
@@ -143,7 +145,8 @@ a {
     gap: 2rem;
     align-items: center;
 
-    input, select {
+    input,
+    select {
         border: none;
         padding: 0.8rem;
     }

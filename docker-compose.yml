@@ -1,11 +1,10 @@
 services:
-  spinner:
-    build:
-      context: .
-    container_name: spinner
-    ports:
-      - ${PORT}:80
-    volumes:
-      - ./server/data:/app/server/data
-    restart: unless-stopped
-  
+    spinner:
+        build:
+            context: .
+        container_name: spinner
+        ports:
+            - ${PORT}:80
+        volumes:
+            - ./server/data:/app/server/data
+        restart: unless-stopped

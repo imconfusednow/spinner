@@ -1,26 +1,26 @@
 {
-  "name": "spinner",
-  "version": "1.0.0",
-  "description": "Spinner wheel for choosing between options, with themes.",
-  "license": "ISC",
-  "author": "",
-  "type": "module",
-  "main": "server.js",
-  "scripts": {
-    "dev": "nodemon",
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "better-sqlite3": "^12.4.1",
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.2",
-    "express": "^5.1.0",
-    "express-handlebars": "^8.0.1",
-    "feather-icons": "^4.29.2",
-    "hbs": "^4.2.0",
-    "joi": "^18.0.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.10"
-  }
+    "name": "spinner",
+    "version": "1.0.0",
+    "description": "Spinner wheel for choosing between options, with themes.",
+    "license": "ISC",
+    "author": "",
+    "type": "module",
+    "main": "server.js",
+    "scripts": {
+        "dev": "nodemon",
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "better-sqlite3": "^12.4.1",
+        "cors": "^2.8.5",
+        "dotenv": "^17.2.2",
+        "express": "^5.1.0",
+        "express-handlebars": "^8.0.1",
+        "feather-icons": "^4.29.2",
+        "hbs": "^4.2.0",
+        "joi": "^18.0.1"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.10"
+    }
 }

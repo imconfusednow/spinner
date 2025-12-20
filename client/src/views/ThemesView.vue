@@ -7,16 +7,14 @@ import { useSpinnerStore } from '@/stores/spinner';
 const spinnerStore = useSpinnerStore();
 const search = ref('');
 
-
-const filteredThemes = computed(()=>{
-    return spinnerStore.themes.filter((theme)=>{
+const filteredThemes = computed(() => {
+    return spinnerStore.themes.filter((theme) => {
         if (theme.label === 'Random') {
             return false;
         }
         return fuzzyMatch(theme.label, search.value);
     });
 });
-
 </script>
 
 <template>
@@ -26,7 +24,9 @@ const filteredThemes = computed(()=>{
             <div class="input-div">
                 <input placeholder="Name Search" v-model="search" />
             </div>
-            <button class="btn btn-green" @click="$router.push('/themes/new')">New Theme +</button>
+            <button class="btn btn-green" @click="$router.push('/themes/new')">
+                New Theme +
+            </button>
         </div>
         <table class="themes">
             <thead>
@@ -41,15 +41,21 @@ const filteredThemes = computed(()=>{
                 </tr>
             </thead>
             <tbody>
-               <tr v-for="theme in filteredThemes">
-                    <td>{{theme.label}}</td>
-                    <td><img :src="`${theme.image}`"></td>
+                <tr v-for="theme in filteredThemes">
+                    <td>{{ theme.label }}</td>
+                    <td><img :src="`${theme.image}`" /></td>
                     <td><audio controls :src="`${theme.music}`"></audio></td>
                     <td><audio controls :src="`${theme.ending}`"></audio></td>
                     <td>{{ theme.animation }}</td>
-                    <td>{{ DateTime.fromSQL(theme.created_at).toLocaleString() }}</td>
-                    <td class="skinny"><button class="btn btn-red">Delete</button></td>
-               </tr>
+                    <td>
+                        {{
+                            DateTime.fromSQL(theme.created_at).toLocaleString()
+                        }}
+                    </td>
+                    <td class="skinny">
+                        <button class="btn btn-red">Delete</button>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -70,7 +76,8 @@ const filteredThemes = computed(()=>{
     border-collapse: collapse;
     margin: auto;
 
-    th, td {
+    th,
+    td {
         text-align: left;
         padding: 0.75rem;
         border-bottom: 1px solid #eee;
@@ -98,6 +105,4 @@ const filteredThemes = computed(()=>{
     gap: 2rem;
     padding-block: 1rem;
 }
-
-
 </style>

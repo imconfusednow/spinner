@@ -1,9 +1,9 @@
-import path from "path";
-import fs from "fs";
-import Database from "better-sqlite3";
-import { __basedir } from "../utils/constants.js";
+import path from 'path';
+import fs from 'fs';
+import Database from 'better-sqlite3';
+import { __basedir } from '../utils/constants.js';
 
-export const db = new Database(path.join(__basedir, "data", "spinner.sqlite"));
+export const db = new Database(path.join(__basedir, 'data', 'spinner.sqlite'));
 
 db.exec(`
     CREATE TABLE IF NOT EXISTS migrations (
@@ -14,16 +14,19 @@ db.exec(`
 `);
 
 export function runMigrations() {
-    const migrationDir = path.join(__basedir, "src", "db", "migrations");
+    const migrationDir = path.join(__basedir, 'src', 'db', 'migrations');
     const files = fs.readdirSync(migrationDir).sort();
 
-    const applied = db.prepare("SELECT name FROM migrations").all().map(r => r.name);
-    const insert = db.prepare("INSERT INTO migrations (name) VALUES (?)");
+    const applied = db
+        .prepare('SELECT name FROM migrations')
+        .all()
+        .map((r) => r.name);
+    const insert = db.prepare('INSERT INTO migrations (name) VALUES (?)');
 
     for (const file of files) {
         if (!applied.includes(file)) {
             console.log(`Applying migration: ${file}`);
-            const sql = fs.readFileSync(path.join(migrationDir, file), "utf8");
+            const sql = fs.readFileSync(path.join(migrationDir, file), 'utf8');
             db.exec(sql);
             insert.run(file);
         }
