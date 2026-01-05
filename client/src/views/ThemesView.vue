@@ -1,11 +1,23 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { fuzzyMatch } from '@/js/utils';
+import { fuzzyMatch, apiFetch } from '@/js/utils';
 import { DateTime } from 'luxon';
 import { useSpinnerStore } from '@/stores/spinner';
+import { showToast } from '@/js/modals';
 
 const spinnerStore = useSpinnerStore();
 const search = ref('');
+
+async function deleteTheme(themeId) {
+    try {
+        const response = await apiFetch(`themes/${themeId}`, 'DELETE');
+        showToast(response.message);
+    } catch (error) {
+        showToast(error.message, 3000, ['error']);
+    }
+
+    spinnerStore.fetchThemes();
+}
 
 const filteredThemes = computed(() => {
     return spinnerStore.themes.filter((theme) => {
@@ -15,6 +27,8 @@ const filteredThemes = computed(() => {
         return fuzzyMatch(theme.label, search.value);
     });
 });
+
+spinnerStore.fetchThemes();
 </script>
 
 <template>
@@ -53,7 +67,12 @@ const filteredThemes = computed(() => {
                         }}
                     </td>
                     <td class="skinny">
-                        <button class="btn btn-red">Delete</button>
+                        <button
+                            class="btn btn-red"
+                            @click="deleteTheme(theme.id)"
+                        >
+                            Delete
+                        </button>
                     </td>
                 </tr>
             </tbody>

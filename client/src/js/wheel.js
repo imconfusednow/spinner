@@ -439,8 +439,8 @@ export class Wheel {
 
     checkInButton() {
         const rect = this.canvas.canvas.getBoundingClientRect();
-        const mouseX = x.value - rect.left;
-        const mouseY = y.value - rect.top;
+        const mouseX = x.value - (rect.left + window.scrollX);
+        const mouseY = y.value - (rect.top + window.scrollY);
         const dx = mouseX - this.x;
         const dy = mouseY - this.y;
         if (dx * dx + dy * dy <= this.buttonSize() ** 2) {

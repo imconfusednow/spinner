@@ -13,7 +13,7 @@ export const useSpinnerStore = defineStore('spinner', () => {
     const currentTheme = ref({});
 
     async function fetchThemes() {
-        const url = '/api/themes';
+        const url = 'themes';
         try {
             const response = await apiFetch(url);
             themes.value = parseThemes(response);

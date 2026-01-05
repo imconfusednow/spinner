@@ -48,15 +48,18 @@ export async function startAnimationLoop(func) {
     window.requestAnimationFrame(loop);
 }
 
-export async function apiFetch(path, method = 'get') {
-    const protocol = window.location.protocol;
-    const hostname = window.location.hostname;
-    const port = window.location.port;
-
-    // const response = await fetch(`${protocol}//${hostname}:${port}${path}`);
-    const response = await fetch(`${path}`);
+export async function apiFetch(path, method = 'GET', payload) {
+    const response = await fetch(`/api/${path}`, {
+        method: method,
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+    });
     if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
+        const data = await response.json();
+        throw new Error(`Response status: ${response.status}. ${data.error}`);
     }
     return await response.json();
 }
