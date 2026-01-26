@@ -18,7 +18,9 @@
         "express-handlebars": "^8.0.1",
         "feather-icons": "^4.29.2",
         "hbs": "^4.2.0",
-        "joi": "^18.0.1"
+        "joi": "^18.0.1",
+        "jsonwebtoken": "^9.0.3",
+        "multer": "^2.0.2"
     },
     "devDependencies": {
         "nodemon": "^3.1.10"

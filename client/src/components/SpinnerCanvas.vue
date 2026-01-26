@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
 import { Wheel } from '@/js/wheel';
 import { Modal } from '@/js/modals';
@@ -8,7 +8,8 @@ import { Canvas } from '@/js/canvas.js';
 import { useSpinnerStore } from '@/stores/spinner';
 
 const props = defineProps({
-    captureSpace: Boolean,
+    captureSpace: { type: Boolean, required: false },
+    localOptions: { type: Array, required: false, default: null },
 });
 const spinnerStore = useSpinnerStore();
 let wheel = null;
@@ -31,7 +32,17 @@ onMounted(() => {
     const canvas = new Canvas('spinner-canvas');
     wheel = new Wheel(canvas, resultModal, spinnerStore, Math.random());
     ({ pause } = useRafFn(() => wheel.draw()));
+    if (props.localOptions) {
+        wheel.updateLocalOptions(props.localOptions);
+    }
 });
+
+watch(
+    () => props.localOptions,
+    () => {
+        wheel.updateLocalOptions(props.localOptions);
+    },
+);
 
 onBeforeRouteLeave(() => {
     pause();
@@ -57,8 +68,6 @@ onBeforeRouteLeave(() => {
     display: block;
     width: 100%;
     height: 100%;
-
-    /* animation: spinspin 2s linear infinite forwards; */
 }
 
 @keyframes spinspin {

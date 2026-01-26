@@ -35,6 +35,8 @@ spinnerStore.fetchThemes();
     <div class="outer-div">
         <h1>Theme Management</h1>
         <div class="filter-div">
+            Showing {{ filteredThemes.length }} of
+            {{ spinnerStore.themes.length - 1 }} Themes
             <div class="input-div">
                 <input v-model="search" placeholder="Name Search" />
             </div>
@@ -49,6 +51,7 @@ spinnerStore.fetchThemes();
                     <th scope="col">Image</th>
                     <th scope="col">Music</th>
                     <th scope="col">End Sound</th>
+                    <th scope="col">Colours</th>
                     <th scope="col">Animation</th>
                     <th scope="col">Created</th>
                     <th scope="col" class="skinny">Actions</th>
@@ -60,6 +63,16 @@ spinnerStore.fetchThemes();
                     <td><img :src="`${theme.image}`" /></td>
                     <td><audio controls :src="`${theme.music}`"></audio></td>
                     <td><audio controls :src="`${theme.ending}`"></audio></td>
+                    <td>
+                        <div class="col-block-wrapper">
+                            <div
+                                v-for="(col, index) in theme.colours"
+                                :key="index"
+                                class="col-block"
+                                :style="{ backgroundColor: col }"
+                            ></div>
+                        </div>
+                    </td>
                     <td>{{ theme.animation }}</td>
                     <td>
                         {{
@@ -106,12 +119,22 @@ spinnerStore.fetchThemes();
         width: 0;
     }
 
+    .col-block-wrapper {
+        display: flex;
+        gap: 0.3rem;
+    }
+
+    .col-block {
+        padding: 1rem;
+        border-radius: 5px;
+    }
+
     img {
         max-width: 50px;
     }
 
     audio {
-        max-width: 100%;
+        width: 100%;
     }
 }
 
@@ -123,5 +146,6 @@ spinnerStore.fetchThemes();
     display: flex;
     gap: 2rem;
     padding-block: 1rem;
+    align-items: center;
 }
 </style>

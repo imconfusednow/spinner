@@ -87,6 +87,7 @@ const closedText = computed(() => {
                 @click="handleSelected(option)"
             >
                 {{ option.label }}
+                <span v-if="option.tag" class="tag">{{ option.tag }}</span>
             </button>
         </div>
     </div>
@@ -167,6 +168,13 @@ const closedText = computed(() => {
 .highlight {
     outline: orange solid;
     animation: flash 0.9s infinite linear;
+}
+
+.tag {
+    background: rgb(12, 133, 231);
+    padding: 0.3rem;
+    border-radius: 5px;
+    font-size: 0.8rem;
 }
 
 @keyframes flash {

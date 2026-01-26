@@ -117,7 +117,7 @@ export class Canvas {
         this.ctx.drawImage(
             this.fakeCtx.canvas,
             widthOffset,
-            -this.fakeCtx.canvas.height / 2,
+            Math.floor(-this.fakeCtx.canvas.height / 2),
             this.fakeCtx.canvas.width,
             this.fakeCtx.canvas.height,
         );

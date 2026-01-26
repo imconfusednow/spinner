@@ -8,10 +8,10 @@ const title = useTitle();
 const eventBus = useEventBus('user-error');
 
 export class Wheel {
-    DECELERATION = 0.993;
+    DECELERATION = 0.992;
     CLICKDURATION = 0.5;
-    STATICSPEED = 0.005;
-    AUDIOCTX = new (window.AudioContext || window.webkitAudioContext)();
+    STATICSPEED = 0.003;
+    BIAS_WEIGHTING = 15;
     constructor(canvas, resultModal, spinnerStore, wheelId) {
         const { currentTheme, options, spinning, themes } =
             storeToRefs(spinnerStore);
@@ -30,13 +30,13 @@ export class Wheel {
         this.originalY = this.canvas.height / 2;
         this.y = this.canvas.height / 2;
         this.options = options;
-        this.span = this.calculateSpan();
         this.sounds = {};
         this.images = {};
         //Keeps the sound buffer 'warm' so sound don't become quiet
         this.loadSound('/sounds/silence.mp3', 'silence');
         this.playSound('silence', { loop: true, volume: 0.01 });
-        this.clickSound = this.loadSound('/sounds/click.wav', 'click');
+        this.loadSound('/sounds/click.mp3', 'click');
+        this.loadSound('/sounds/ding.mp3', 'ding');
         this.resultModal = resultModal;
         this.clickTimer = 0;
         this.currentTheme = currentTheme;
@@ -46,8 +46,8 @@ export class Wheel {
         this.wheelId = wheelId;
     }
 
-    updateOptions(options) {
-        this.options.value = options;
+    updateLocalOptions(options) {
+        this.options = { value: options.filter((option) => option) };
     }
 
     setupButton() {
@@ -56,24 +56,49 @@ export class Wheel {
         });
     }
 
-    calculateSpan() {
-        return FULLROTATION / this.options.value.length;
+    calculateSpan(weighting, totalWeighting) {
+        const share = weighting / totalWeighting;
+        return FULLROTATION * share;
+    }
+
+    getWeightings() {
+        let sum = 0;
+        const weightings = this.options.value.map((opt, i) => {
+            const weighting =
+                opt === this.currentTheme.value.weighted_option
+                    ? this.BIAS_WEIGHTING
+                    : 1;
+            sum += weighting;
+            return weighting;
+        });
+
+        return [sum, weightings];
     }
 
     draw() {
         const [width, height] = this.canvas.startStep();
         this.setDimensions(width, height);
 
-        this.span = this.calculateSpan();
-
-        const selectionChanged = this.calculateCurrentSelection();
         this.rotateStep();
         if (this.spinning.value) {
-            this.physicsStep(selectionChanged);
+            this.physicsStep();
         }
 
+        let startAngle = this.rotation;
+        let span = 0;
+        const [totalWeighting, weightings] = this.getWeightings();
+
         for (let index in this.options.value) {
-            this.drawSlice(index);
+            span = this.calculateSpan(weightings[index], totalWeighting);
+            if (this.spinning.value) {
+                this.calculateCurrentSelection(
+                    startAngle,
+                    startAngle + span,
+                    index,
+                );
+            }
+            this.drawSlice(index, startAngle, span);
+            startAngle += span;
         }
         this.drawMarker();
         this.drawSpinButton();
@@ -90,7 +115,7 @@ export class Wheel {
         }
     }
 
-    physicsStep(changedSelection) {
+    physicsStep() {
         if (this.currentTheme.value?.animation === 'bounce') {
             const mag = 1000 * (this.speed + 0.2);
             this.y =
@@ -110,7 +135,7 @@ export class Wheel {
         }
 
         this.speed *= this.DECELERATION;
-        this.speed -= 0.00005;
+        this.speed -= 0.00004;
         if (this.spinning.value && this.speed < 0.001) {
             this.setWinner(this.options.value[this.currentSelection]);
         }
@@ -121,11 +146,6 @@ export class Wheel {
             this.hadBonus = true;
         }
         this.clickTimer += 0.05;
-
-        if (changedSelection) {
-            this.playSound('click', { loop: false });
-            this.clickTimer = 0;
-        }
     }
 
     spin(speed) {
@@ -158,6 +178,7 @@ export class Wheel {
         this.direction = this.chooseDirection();
         this.loadSound(`${this.currentTheme.value?.music}`, 'music');
         this.playSound('music');
+        this.setDingTime();
     }
 
     start() {
@@ -181,7 +202,7 @@ export class Wheel {
         this.speed += 0.1;
     }
 
-    drawSlice(index) {
+    drawSlice(index, startAngle, span) {
         if (
             this.spinning.value &&
             this.currentTheme.value?.animation === 'invisible'
@@ -190,34 +211,32 @@ export class Wheel {
         }
 
         const sliceColour = this.getColour(index);
-        const startAngle = index * this.span + this.rotation;
 
         this.canvas.drawSegment(
             this.x,
             this.y,
             sliceColour,
             startAngle,
-            this.span,
+            span,
             this.radius,
             this.buttonSize(),
             this.gap,
         );
 
-        const x = this.x + Math.cos(startAngle + this.span / 2) * this.radius;
-        const y = this.y + Math.sin(startAngle + this.span / 2) * this.radius;
-        const rot = startAngle + this.span / 2;
+        const x = this.x + Math.cos(startAngle + span / 2) * this.radius;
+        const y = this.y + Math.sin(startAngle + span / 2) * this.radius;
+        const rot = startAngle + span / 2;
 
         const text = this.options.value[index];
-
         this.canvas.drawText(text, 60, 'white', x, y, rot, 5, 'right');
     }
 
     getColour(index) {
-        if (this.currentTheme.value?.colours) {
-            return this.currentTheme.value.colours[index];
-        } else {
-            return COLOURS[index];
-        }
+        const source = this.currentTheme.value?.colours
+            ? this.currentTheme.value.colours
+            : COLOURS;
+
+        return source[index % source.length];
     }
 
     drawMarker() {
@@ -274,18 +293,18 @@ export class Wheel {
         if (this.spinning.value) {
             ctx.drawImage(
                 img,
-                -buttonSize * 1.5,
-                -buttonSize * 1.5,
-                buttonSize * 3,
-                buttonSize * 3,
+                Math.floor(-buttonSize * 1.5),
+                Math.floor(-buttonSize * 1.5),
+                Math.floor(buttonSize * 3),
+                Math.floor(buttonSize * 3),
             );
         } else {
             ctx.drawImage(
                 img,
-                -buttonSize * 0.75,
-                -buttonSize * 0.75,
-                buttonSize * 1.5,
-                buttonSize * 1.5,
+                Math.floor(-buttonSize * 0.75),
+                Math.floor(-buttonSize * 0.75),
+                Math.floor(buttonSize * 1.5),
+                Math.floor(buttonSize * 1.5),
             );
         }
 
@@ -304,21 +323,27 @@ export class Wheel {
         return ['/images/spin.svg', 'default'];
     }
 
-    calculateCurrentSelection() {
-        let changed = false;
-        const selection =
-            this.options.value.length -
-            1 -
-            Math.floor(this.rotation / this.span);
+    calculateCurrentSelection(startAngle, endAngle, index) {
+        let selection = null;
+
+        if (startAngle < FULLROTATION && endAngle > FULLROTATION) {
+            selection = index;
+        } else {
+            return false;
+        }
 
         if (selection !== this.currentSelection) {
             if (this.currentSelection !== '') {
-                changed = true;
+                this.handleSelectionChange();
             }
             this.currentSelection = selection;
         }
+    }
 
-        return changed;
+    handleSelectionChange() {
+        this.playSound('click', { loop: false });
+        this.clickTimer = 0;
+        this.speed -= 0.0002;
     }
 
     loadImage(file, name) {
@@ -394,12 +419,27 @@ export class Wheel {
         this.resetState();
         this.resultModal.addButton(
             `Remove ${winner}`,
-            (event) => {
+            () => {
                 this.removeOption(winner);
                 this.resultModal.close();
             },
             ['btn-red'],
         );
+        // setTimeout(() => {
+        //     this.playTimerSound();
+        // }, this.dingTime);
+    }
+
+    setDingTime() {
+        this.dingTime = (45 * 60 * 1000) / this.options.value.length;
+    }
+
+    playTimerSound() {
+        if (!document.hidden) {
+            return;
+        }
+        this.playSound('ding', { loop: false });
+        title.value = `Time Up!`;
     }
 
     setDimensions(canvasWidth, canvasHeight) {

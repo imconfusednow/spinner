@@ -2,6 +2,9 @@
 import { onClickOutside } from '@vueuse/core';
 import { useTemplateRef, ref } from 'vue';
 import { RouterLink } from 'vue-router';
+import { useSessionStore } from '@/stores/session';
+
+const sessionStore = useSessionStore();
 
 const show = ref(false);
 
@@ -23,9 +26,26 @@ onClickOutside(outerDiv, (event) => {
                     <button @click="show = false">×</button>
                 </div>
                 <div class="links-div">
-                    <RouterLink to="/">Spinner</RouterLink>
-                    <RouterLink to="/themes">Manage Themes</RouterLink>
-                    <RouterLink to="/animations">Manage Animations</RouterLink>
+                    <RouterLink to="/" @click="show = false"
+                        >Spinner</RouterLink
+                    >
+                    <template v-if="sessionStore.token">
+                        <RouterLink to="/themes" @click="show = false"
+                            >Manage Themes</RouterLink
+                        >
+                        <RouterLink to="/animations" @click="show = false"
+                            >Manage Animations</RouterLink
+                        >
+                        <button class="login-button">Logout</button>
+                    </template>
+                    <template v-else>
+                        <RouterLink
+                            to="/login"
+                            class="login"
+                            @click="show = false"
+                            >Login</RouterLink
+                        >
+                    </template>
                 </div>
             </div>
         </Transition>
@@ -50,8 +70,10 @@ button {
 .links-div {
     display: flex;
     flex-direction: column;
+    gap: 0.3rem;
 
-    a {
+    a,
+    button {
         display: flex;
         align-items: center;
         padding: 1rem;
@@ -65,6 +87,14 @@ button {
         &.router-link-active {
             background: #535353;
         }
+    }
+
+    .login {
+        color: rgb(113, 113, 223);
+    }
+
+    button {
+        border: none;
     }
 }
 
@@ -99,9 +129,10 @@ button {
     transition: all 0.2s;
     filter: drop-shadow(10px 0 10px black);
 
-    shadow &.v-enter-from {
+    &.v-enter-from {
         opacity: 0;
-        translate: -100px 0;
+        translate: -300px 0;
+        transition: all 0.2s;
     }
 
     &.v-enter-to {
@@ -116,7 +147,7 @@ button {
 
     &.v-leave-to {
         opacity: 0;
-        translate: -100px 0;
+        translate: -300px 0;
     }
 }
 </style>

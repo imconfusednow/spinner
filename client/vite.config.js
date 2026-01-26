@@ -20,6 +20,9 @@ export default defineConfig({
             '/api': {
                 target: `http://${hostname()}:80`,
             },
+            '/uploads': {
+                target: `http://${hostname()}:80`,
+            },
         },
     },
 });

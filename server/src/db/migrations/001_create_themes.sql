@@ -7,5 +7,6 @@ CREATE TABLE IF NOT EXISTS themes (
     animation_id INTEGER,
     colours TEXT,
     spinner_id INTERGER,
+    weighted_option TEXT,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );

@@ -1,4 +1,5 @@
 import { EMOJI } from '@/js/constants.js';
+import { useSessionStore } from '@/stores/session';
 
 export function randomChoice(choices) {
     return choices[Math.floor(Math.random() * choices.length)];
@@ -48,20 +49,48 @@ export async function startAnimationLoop(func) {
     window.requestAnimationFrame(loop);
 }
 
-export async function apiFetch(path, method = 'GET', payload) {
-    const response = await fetch(`/api/${path}`, {
+export async function apiFetch(
+    path,
+    method = 'GET',
+    payload = null,
+    contentType = 'application/json',
+) {
+    const sessionStore = useSessionStore();
+    const opts = {
         method: method,
         headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
+            Accept: contentType,
+            authorization: `Bearer ${sessionStore.token}`,
         },
-        body: JSON.stringify(payload),
-    });
+    };
+
+    if (payload) {
+        if (contentType === 'application/json') {
+            opts.body = JSON.stringify(payload);
+            opts.headers['Content-Type'] = contentType;
+        } else {
+            opts.body = payload;
+        }
+    }
+    const response = await fetch(`/api/${path}`, opts);
     if (!response.ok) {
         const data = await response.json();
-        throw new Error(`Response status: ${response.status}. ${data.error}`);
+        throw new Error(`Response status: ${response.status}. ${data.message}`);
     }
     return await response.json();
+}
+
+export function createFormData(json) {
+    const formData = new FormData();
+
+    Object.entries(json).forEach(([key, value]) => {
+        if (value === undefined || value === '') {
+            return;
+        }
+        formData.append(key, value);
+    });
+
+    return formData;
 }
 
 export function fuzzyMatch(string, search) {

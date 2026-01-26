@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { useStorage } from '@vueuse/core';
 import { DateTime } from 'luxon';
 import { apiFetch } from '@/js/utils';
+import { showToast } from '@/js/modals';
 
 const randomTheme = { label: 'Random', value: 999, colour: '#c79f2e' };
 
@@ -18,21 +19,21 @@ export const useSpinnerStore = defineStore('spinner', () => {
             const response = await apiFetch(url);
             themes.value = parseThemes(response);
         } catch (error) {
-            console.error(error.message);
+            showToast(error.message, 3000, ['error']);
         }
     }
 
     function parseThemes(themes) {
         for (let theme of themes) {
-            theme.image = `/images/themes/${theme.image}`;
-            theme.music = `/sounds/themes/${theme.music}`;
-            theme.ending = `/sounds/themes/${theme.music}`;
+            theme.image = `/uploads/themes/images/${theme.image}`;
+            theme.music = `/uploads/themes/sounds/${theme.music}`;
+            theme.ending = `/uploads/themes/sounds/${theme.ending}`;
             theme.value = theme.id;
             theme.label = theme.name;
-            theme.colour =
+            theme.tag =
                 DateTime.fromISO(theme.created_at.replace(' ', 'T')) >
                 DateTime.now().minus({ weeks: 1 })
-                    ? 'green'
+                    ? 'New'
                     : '';
             theme.colours = theme.colours ? theme.colours.split(',') : '';
         }

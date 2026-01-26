@@ -42,9 +42,13 @@ a {
     color: white;
     font-size: 1rem;
 
-    &:hover {
+    &:hover:not(:disabled) {
         filter: brightness(0.8);
         cursor: pointer;
+    }
+
+    &:disabled {
+        filter: grayscale(1) brightness(0.8) opacity(0.8);
     }
 }
 
@@ -121,7 +125,7 @@ a {
 }
 
 .toast {
-    position: absolute;
+    position: fixed;
     bottom: 2rem;
     left: 2rem;
 
