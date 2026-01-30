@@ -63,9 +63,10 @@ export class Wheel {
 
     getWeightings() {
         let sum = 0;
+        const weightedOption = this.currentTheme.value.weighted_option;
         const weightings = this.options.value.map((opt, i) => {
             const weighting =
-                opt === this.currentTheme.value.weighted_option
+                opt.toLowerCase() === weightedOption?.toLowerCase()
                     ? this.BIAS_WEIGHTING
                     : 1;
             sum += weighting;
@@ -117,7 +118,7 @@ export class Wheel {
 
     physicsStep() {
         if (this.currentTheme.value?.animation === 'bounce') {
-            const mag = 1000 * (this.speed + 0.2);
+            const mag = 2000 * this.speed;
             this.y =
                 this.canvas.height / 2 -
                 Math.abs(Math.sin(this.spinTime / 20) * mag);
@@ -132,6 +133,20 @@ export class Wheel {
                 this.radius = 0;
             }
             this.radius += Math.random() * 4;
+        }
+        if (
+            !this.currentTheme.value?.animation == 'rolloff' &&
+            this.spinTime > 210
+        ) {
+            this.x -= this.speed * this.radius * -this.direction;
+            if (this.x + this.radius < 0 && this.direction < 0) {
+                this.x = window.innerWidth + this.radius;
+            } else if (
+                this.x - this.radius > window.innerWidth &&
+                this.direction > 0
+            ) {
+                this.x = -this.radius;
+            }
         }
 
         this.speed *= this.DECELERATION;
@@ -394,8 +409,8 @@ export class Wheel {
                 text,
                 20,
                 'white',
-                this.x - this.radius,
-                this.y - this.radius + 50 + 20 * i,
+                100,
+                100 + 50 + 20 * i,
                 0,
                 0,
                 'left',

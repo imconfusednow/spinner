@@ -10,12 +10,16 @@ import { db } from '../db/index.js';
 
 const router = Router();
 
-router.get('/themes', authenticateToken, async (req, res) => {
-    const themes = db
-        .prepare(
-            `SELECT themes.*, animations.name AS animation FROM themes LEFT JOIN animations ON animations.id = themes.animation_id ORDER BY themes.name COLLATE NOCASE`,
-        )
-        .all();
+router.get('/themes', async (req, res) => {
+    const hidden = req.query.hidden;
+    let queryString = `SELECT themes.*, animations.name AS animation FROM themes 
+    LEFT JOIN animations ON animations.id = themes.animation_id`;
+    if (hidden) {
+        queryString += ` WHERE hidden = 0`;
+    }
+    queryString += ` ORDER BY themes.name COLLATE NOCASE`;
+
+    const themes = db.prepare(queryString).all();
     res.json(themes);
 });
 
@@ -39,6 +43,7 @@ router.post(
         { name: 'music_file', maxCount: 1 },
         { name: 'ending_file', maxCount: 1 },
     ]),
+    authenticateToken,
     validate(themeSchema),
     async (req, res) => {
         try {
@@ -53,7 +58,7 @@ router.post(
             }
 
             const insert = db.prepare(
-                'INSERT INTO themes (name, music, image, ending, animation_id, colours) VALUES (?, ?, ?, ?, ?, ?)',
+                'INSERT INTO themes (name, music, image, ending, animation_id, colours, creator) VALUES (?, ?, ?, ?, ?, ?, ?)',
             );
             insert.run([
                 body.name,
@@ -62,6 +67,7 @@ router.post(
                 req.files['ending_file'][0].filename,
                 body.animation_id,
                 body.colours,
+                req.user.username,
             ]);
 
             res.status(201).json({ message: `Theme ${body.name} created!` });
@@ -72,7 +78,7 @@ router.post(
     },
 );
 
-router.delete('/themes/:id', (req, res) => {
+router.delete('/themes/:id', authenticateToken, (req, res) => {
     try {
         const id = req.params.id;
 

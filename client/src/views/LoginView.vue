@@ -1,10 +1,12 @@
 <script setup>
 import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { apiFetch } from '@/js/utils';
 import { showToast } from '@/js/modals';
 import { useSessionStore } from '@/stores/session.js';
 
 const sessionStore = useSessionStore();
+const router = useRouter();
 
 const data = ref({});
 
@@ -13,6 +15,7 @@ async function login() {
         const response = await apiFetch(`login`, 'POST', data.value);
         sessionStore.token = response.token;
         showToast('Login Successful');
+        router.back();
     } catch (error) {
         showToast(error.message, 3000, ['error']);
     }

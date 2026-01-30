@@ -3,12 +3,17 @@ import { onClickOutside } from '@vueuse/core';
 import { useTemplateRef, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import { useSessionStore } from '@/stores/session';
+import { setMapStoreSuffix } from 'pinia';
 
 const sessionStore = useSessionStore();
 
 const show = ref(false);
 
 const outerDiv = useTemplateRef('outer-div');
+
+function logout() {
+    sessionStore.token = '';
+}
 
 onClickOutside(outerDiv, (event) => {
     show.value = false;
@@ -36,7 +41,9 @@ onClickOutside(outerDiv, (event) => {
                         <RouterLink to="/animations" @click="show = false"
                             >Manage Animations</RouterLink
                         >
-                        <button class="login-button">Logout</button>
+                        <button class="login-button" @click="logout">
+                            Logout
+                        </button>
                     </template>
                     <template v-else>
                         <RouterLink

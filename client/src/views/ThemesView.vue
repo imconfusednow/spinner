@@ -53,12 +53,17 @@ spinnerStore.fetchThemes();
                     <th scope="col">End Sound</th>
                     <th scope="col">Colours</th>
                     <th scope="col">Animation</th>
+                    <th scope="col">Creator</th>
                     <th scope="col">Created</th>
                     <th scope="col" class="skinny">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="theme in filteredThemes" :key="theme.value">
+                <tr
+                    v-for="theme in filteredThemes"
+                    :key="theme.value"
+                    :class="{ 'hidden-theme': theme.hidden }"
+                >
                     <td>{{ theme.label }}</td>
                     <td><img :src="`${theme.image}`" /></td>
                     <td><audio controls :src="`${theme.music}`"></audio></td>
@@ -74,6 +79,7 @@ spinnerStore.fetchThemes();
                         </div>
                     </td>
                     <td>{{ theme.animation }}</td>
+                    <td>{{ theme.creator }}</td>
                     <td>
                         {{
                             DateTime.fromSQL(theme.created_at).toLocaleString()
@@ -113,6 +119,10 @@ spinnerStore.fetchThemes();
         text-align: left;
         padding: 0.75rem;
         border-bottom: 1px solid #eee;
+    }
+
+    tr.hidden-theme {
+        filter: brightness(0.3);
     }
 
     .skinny {

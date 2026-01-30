@@ -1,5 +1,4 @@
 <script setup>
-const props = defineProps({});
 const colours = defineModel({ type: Array });
 const emit = defineEmits(['change']);
 

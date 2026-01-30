@@ -24,10 +24,8 @@ export function generateToken(payload) {
     const secret = process.env.JWT_SECRET;
 
     const token = jwt.sign(payload, secret, {
-        expiresIn: '15m',
+        expiresIn: '1d',
     });
-
-    console.log('Access Token:', token);
 
     return token;
 }

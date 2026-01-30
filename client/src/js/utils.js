@@ -75,6 +75,9 @@ export async function apiFetch(
     const response = await fetch(`/api/${path}`, opts);
     if (!response.ok) {
         const data = await response.json();
+        if (response.status === 403) {
+            sessionStore.token = '';
+        }
         throw new Error(`Response status: ${response.status}. ${data.message}`);
     }
     return await response.json();

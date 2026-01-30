@@ -74,10 +74,10 @@ export async function deleteFile(filePath) {
         await fs.access(filePath);
         await fs.unlink(filePath);
     } catch (e) {
-        if (err.code === 'ENOENT') {
+        if (e.code === 'ENOENT') {
             throw new Error(`File ${filePath} does not exist`);
         } else {
-            throw new Error(err);
+            throw new Error(e);
         }
     }
 }

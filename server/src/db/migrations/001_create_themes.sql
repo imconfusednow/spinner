@@ -8,5 +8,7 @@ CREATE TABLE IF NOT EXISTS themes (
     colours TEXT,
     spinner_id INTERGER,
     weighted_option TEXT,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    hidden INTEGER DEFAULT (0) NOT NULL;
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    creator TEXT
 );
