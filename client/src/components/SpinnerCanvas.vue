@@ -5,16 +5,21 @@ import { Wheel } from '@/js/wheel';
 import { Modal } from '@/js/modals';
 import { onKeyStroke, useRafFn } from '@vueuse/core';
 import { Canvas } from '@/js/canvas.js';
+import { storeToRefs } from 'pinia';
 import { useSpinnerStore } from '@/stores/spinner';
 
 const props = defineProps({
-    captureSpace: { type: Boolean, required: false },
+    captureSpace: { type: Boolean, required: false, default: true },
+    cacheMedia: { type: Boolean, required: false, default: false },
     localOptions: { type: Array, required: false, default: null },
 });
 const spinnerStore = useSpinnerStore();
+const { fps } = storeToRefs(spinnerStore);
 let wheel = null;
 
-let pause = ref(null);
+let pauseDrawing = ref(null);
+let pausePhysics = ref(null);
+let resumeDrawing = ref(null);
 
 if (props.captureSpace) {
     onKeyStroke(' ', (e) => {
@@ -30,8 +35,17 @@ onMounted(() => {
     const resultModal = new Modal({ startOpen: false, classes: [] });
     resultModal.setHeaderText('Spinner Result');
     const canvas = new Canvas('spinner-canvas');
-    wheel = new Wheel(canvas, resultModal, spinnerStore, Math.random());
-    ({ pause } = useRafFn(() => wheel.draw()));
+    wheel = new Wheel(canvas, resultModal, spinnerStore, props.cacheMedia);
+    ({ pause: pauseDrawing, resume: resumeDrawing } = useRafFn(
+        () => {
+            wheel.draw();
+        },
+        { fpsLimit: fps },
+    ));
+    ({ pause: pausePhysics } = useRafFn(() => {
+        wheel.step();
+    }));
+
     if (props.localOptions) {
         wheel.updateLocalOptions(props.localOptions);
     }
@@ -45,8 +59,10 @@ watch(
 );
 
 onBeforeRouteLeave(() => {
-    pause();
+    pauseDrawing();
+    pausePhysics();
     wheel = null;
+    spinnerStore.currentTheme = {};
 });
 </script>
 

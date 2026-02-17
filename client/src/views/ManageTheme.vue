@@ -259,6 +259,7 @@ getAnimations();
             class="spinner"
             :capture-space="false"
             :local-options="options"
+            :cache-media="false"
         />
     </div>
 </template>

@@ -1,11 +1,12 @@
 <script setup>
 import { onClickOutside } from '@vueuse/core';
 import { useTemplateRef, ref } from 'vue';
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 import { useSessionStore } from '@/stores/session';
-import { setMapStoreSuffix } from 'pinia';
+import { showToast } from '@/js/modals';
 
 const sessionStore = useSessionStore();
+const router = useRouter();
 
 const show = ref(false);
 
@@ -13,9 +14,11 @@ const outerDiv = useTemplateRef('outer-div');
 
 function logout() {
     sessionStore.token = '';
+    router.push('/');
+    showToast('Logged out Successfully.');
 }
 
-onClickOutside(outerDiv, (event) => {
+onClickOutside(outerDiv, () => {
     show.value = false;
 });
 </script>
@@ -121,7 +124,7 @@ button {
 }
 
 #outer-div {
-    z-index: 1000;
+    z-index: 100;
     position: relative;
     color: white;
 }

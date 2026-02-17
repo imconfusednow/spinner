@@ -23,6 +23,10 @@ app.set('views', path.join(__basedir, 'src/views'));
 
 app.use('/api', apiRoutes);
 
+app.get('/*splat', (req, res) => {
+    res.sendFile('/index.html', { root: '../client/dist' });
+});
+
 app.use((err, req, res, next) => {
     if (err instanceof multer.MulterError) {
         return res.status(400).json({

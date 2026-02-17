@@ -12,8 +12,8 @@ export class Wheel {
     CLICKDURATION = 0.5;
     STATICSPEED = 0.003;
     BIAS_WEIGHTING = 15;
-    constructor(canvas, resultModal, spinnerStore, wheelId) {
-        const { currentTheme, options, spinning, themes } =
+    constructor(canvas, resultModal, spinnerStore, cacheMedia) {
+        const { currentTheme, options, spinning, themes, fps } =
             storeToRefs(spinnerStore);
         this.canvas = canvas;
         this.originalRadius = 0;
@@ -41,9 +41,11 @@ export class Wheel {
         this.clickTimer = 0;
         this.currentTheme = currentTheme;
         this.spinning = spinning;
+        this.fps = fps;
         this.hadBonus = true;
         this.currentSelection = '';
-        this.wheelId = wheelId;
+        this.cacheMedia = cacheMedia;
+        this.wheelId = Math.floor(Math.random() * 100);
     }
 
     updateLocalOptions(options) {
@@ -80,11 +82,6 @@ export class Wheel {
         const [width, height] = this.canvas.startStep();
         this.setDimensions(width, height);
 
-        this.rotateStep();
-        if (this.spinning.value) {
-            this.physicsStep();
-        }
-
         let startAngle = this.rotation;
         let span = 0;
         const [totalWeighting, weightings] = this.getWeightings();
@@ -104,6 +101,13 @@ export class Wheel {
         this.drawMarker();
         this.drawSpinButton();
         this.spinTime += 1;
+    }
+
+    step() {
+        this.rotateStep();
+        if (this.spinning.value) {
+            this.physicsStep();
+        }
     }
 
     rotateStep() {
@@ -135,7 +139,7 @@ export class Wheel {
             this.radius += Math.random() * 4;
         }
         if (
-            !this.currentTheme.value?.animation == 'rolloff' &&
+            this.currentTheme.value?.animation == 'rolloff' &&
             this.spinTime > 210
         ) {
             this.x -= this.speed * this.radius * -this.direction;
@@ -147,6 +151,11 @@ export class Wheel {
             ) {
                 this.x = -this.radius;
             }
+        }
+        if (this.currentTheme.value?.animation == 'laggy') {
+            this.fps.value = 1;
+        } else {
+            this.fps.value = 100;
         }
 
         this.speed *= this.DECELERATION;
@@ -362,7 +371,7 @@ export class Wheel {
     }
 
     loadImage(file, name) {
-        if (this.images[name]) {
+        if (this.images[name] && this.cacheMedia) {
             return this.images[name];
         }
         const img = document.createElement('img');
@@ -373,7 +382,7 @@ export class Wheel {
     }
 
     loadSound(file, name) {
-        if (this.sounds[name]) {
+        if (this.sounds[name] && this.cacheMedia) {
             return this.sounds[name];
         }
         const sound = new Audio(`${file}`);
@@ -394,6 +403,11 @@ export class Wheel {
             }, stopAfter);
         }
         sound.play();
+    }
+
+    clearMediaChaches() {
+        this.sounds = {};
+        this.images = {};
     }
 
     stopSound(name) {
@@ -430,7 +444,6 @@ export class Wheel {
         this.stopSound('music');
         this.loadSound(`${this.currentTheme.value?.ending}`, 'ending');
         this.playSound('ending', { loop: false, stopAfter: 5000 });
-        this.setCurrentTheme({});
         this.resetState();
         this.resultModal.addButton(
             `Remove ${winner}`,

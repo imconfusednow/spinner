@@ -6,6 +6,7 @@ import {
     deleteUploadedFiles,
 } from '../utils/functions.js';
 import { authenticateToken, generateToken } from '../utils/authentication.js';
+import { authenticateCredentials } from '../external/authentication.js';
 import { db } from '../db/index.js';
 
 const router = Router();
@@ -47,13 +48,13 @@ router.post(
     validate(themeSchema),
     async (req, res) => {
         try {
-            const body = req.body;
+            const { name, animation_id, colours } = req.body;
             const existing = db
                 .prepare('SELECT id FROM themes WHERE name = ?')
-                .get(body.name);
+                .get(name);
 
             if (existing) {
-                const msg = `Theme ${body.name} already exists`;
+                const msg = `Theme ${name} already exists`;
                 return res.status(409).json({ message: msg });
             }
 
@@ -61,16 +62,16 @@ router.post(
                 'INSERT INTO themes (name, music, image, ending, animation_id, colours, creator) VALUES (?, ?, ?, ?, ?, ?, ?)',
             );
             insert.run([
-                body.name,
+                name,
                 req.files['music_file'][0].filename,
                 req.files['image_file'][0].filename,
                 req.files['ending_file'][0].filename,
-                body.animation_id,
-                body.colours,
+                animation_id,
+                colours,
                 req.user.username,
             ]);
 
-            res.status(201).json({ message: `Theme ${body.name} created!` });
+            res.status(201).json({ message: `Theme ${name} created!` });
         } catch (err) {
             console.error(err.message);
             res.status(500).json({ message: err.message });
@@ -112,6 +113,18 @@ router.post('/login', validate(loginSchema), (req, res) => {
     try {
         const { username, password } = req.body;
         const payload = { username: req.body.username };
+
+        const { success, message } = authenticateCredentials(
+            username,
+            password,
+        );
+
+        if (!success) {
+            return res.status(401).json({
+                message: message,
+            });
+        }
+
         const token = generateToken(payload);
 
         res.status(200).json({ token });

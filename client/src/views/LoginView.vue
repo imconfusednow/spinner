@@ -4,19 +4,34 @@ import { useRouter } from 'vue-router';
 import { apiFetch } from '@/js/utils';
 import { showToast } from '@/js/modals';
 import { useSessionStore } from '@/stores/session.js';
+import { onKeyStroke } from '@vueuse/core';
 
 const sessionStore = useSessionStore();
 const router = useRouter();
+onKeyStroke(
+    'Enter',
+    () => {
+        login();
+    },
+    { dedupe: true },
+);
 
-const data = ref({});
+const data = ref({
+    username: '',
+    password: '',
+});
 
 async function login() {
+    if (!formValid.value) {
+        return;
+    }
     try {
         const response = await apiFetch(`login`, 'POST', data.value);
         sessionStore.token = response.token;
         showToast('Login Successful');
         router.back();
     } catch (error) {
+        data.value.password = '';
         showToast(error.message, 3000, ['error']);
     }
 

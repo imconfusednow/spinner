@@ -66,8 +66,12 @@ spinnerStore.fetchThemes();
                 >
                     <td>{{ theme.label }}</td>
                     <td><img :src="`${theme.image}`" /></td>
-                    <td><audio controls :src="`${theme.music}`"></audio></td>
-                    <td><audio controls :src="`${theme.ending}`"></audio></td>
+                    <td class="wide">
+                        <audio controls :src="`${theme.music}`"></audio>
+                    </td>
+                    <td class="wide">
+                        <audio controls :src="`${theme.ending}`"></audio>
+                    </td>
                     <td>
                         <div class="col-block-wrapper">
                             <div
@@ -127,6 +131,10 @@ spinnerStore.fetchThemes();
 
     .skinny {
         width: 0;
+    }
+
+    .wide {
+        width: 400px;
     }
 
     .col-block-wrapper {

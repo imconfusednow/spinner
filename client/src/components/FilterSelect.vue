@@ -113,17 +113,21 @@ const closedText = computed(() => {
     display: flex;
     position: relative;
     min-width: 30ch;
+    margin-right: 1rem;
 }
 
 .pretend-select {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: repeat(auto-fit, minmax(50px, 1fr));
+    grid-template-columns: 1fr 1fr;
+    column-gap: 0.1rem;
+    grid-auto-flow: column;
     position: absolute;
-    width: 100%;
+    width: 200%;
     top: 100%;
     max-height: calc(100vh - 1.5rem - 50px);
     overflow: auto;
-    max-width: 250px;
+    scrollbar-width: none;
 
     .option-button {
         border-top: solid #223548 1px;
@@ -132,7 +136,6 @@ const closedText = computed(() => {
 
 .search-box {
     font-size: 1.2rem;
-    max-width: 250px;
     width: 100%;
     border: none;
     min-height: 50px;

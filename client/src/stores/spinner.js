@@ -12,6 +12,7 @@ export const useSpinnerStore = defineStore('spinner', () => {
     const options = useStorage('spinner-options', []);
     const themes = ref([]);
     const currentTheme = ref({});
+    const fps = ref(100);
 
     async function fetchThemes() {
         const url = 'themes?hidden=false';
@@ -42,5 +43,5 @@ export const useSpinnerStore = defineStore('spinner', () => {
 
     fetchThemes();
 
-    return { spinning, options, currentTheme, themes, fetchThemes };
+    return { spinning, options, currentTheme, themes, fps, fetchThemes };
 });
