@@ -15,7 +15,7 @@ router.get('/themes', async (req, res) => {
     const hidden = req.query.hidden;
     let queryString = `SELECT themes.*, animations.name AS animation FROM themes 
     LEFT JOIN animations ON animations.id = themes.animation_id`;
-    if (hidden) {
+    if (!hidden) {
         queryString += ` WHERE hidden = 0`;
     }
     queryString += ` ORDER BY themes.name COLLATE NOCASE`;

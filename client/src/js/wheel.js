@@ -8,11 +8,11 @@ const title = useTitle();
 const eventBus = useEventBus('user-error');
 
 export class Wheel {
-    DECELERATION = 0.992;
+    DECELERATION = 0.993;
     CLICKDURATION = 0.5;
     STATICSPEED = 0.003;
     BIAS_WEIGHTING = 15;
-    constructor(canvas, resultModal, spinnerStore, cacheMedia) {
+    constructor(canvas, resultModal, spinnerStore, cacheMedia = true) {
         const { currentTheme, options, spinning, themes, fps } =
             storeToRefs(spinnerStore);
         this.canvas = canvas;
@@ -154,8 +154,6 @@ export class Wheel {
         }
         if (this.currentTheme.value?.animation == 'laggy') {
             this.fps.value = 1;
-        } else {
-            this.fps.value = 100;
         }
 
         this.speed *= this.DECELERATION;
@@ -367,7 +365,7 @@ export class Wheel {
     handleSelectionChange() {
         this.playSound('click', { loop: false });
         this.clickTimer = 0;
-        this.speed -= 0.0002;
+        this.speed -= 0.0001;
     }
 
     loadImage(file, name) {
@@ -453,9 +451,14 @@ export class Wheel {
             },
             ['btn-red'],
         );
+        this.resetAnimations();
         // setTimeout(() => {
         //     this.playTimerSound();
         // }, this.dingTime);
+    }
+
+    resetAnimations() {
+        this.fps.value = 100;
     }
 
     setDingTime() {

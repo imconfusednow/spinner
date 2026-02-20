@@ -90,12 +90,21 @@ spinnerStore.fetchThemes();
                         }}
                     </td>
                     <td class="skinny">
-                        <button
-                            class="btn btn-red"
-                            @click="deleteTheme(theme.id)"
-                        >
-                            Delete
-                        </button>
+                        <div class="actions-div">
+                            <button
+                                class="btn btn-red"
+                                @click="deleteTheme(theme.id)"
+                            >
+                                Delete
+                            </button>
+                            <button
+                                class="btn btn-dark"
+                                @click="hideTheme(theme.id)"
+                            >
+                                <span v-if="theme.hidden">Unhide</span>
+                                <span v-else>Hide</span>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             </tbody>
@@ -165,5 +174,10 @@ spinnerStore.fetchThemes();
     gap: 2rem;
     padding-block: 1rem;
     align-items: center;
+}
+
+.actions-div {
+    display: grid;
+    gap: 2px;
 }
 </style>

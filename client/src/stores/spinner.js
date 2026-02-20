@@ -15,7 +15,7 @@ export const useSpinnerStore = defineStore('spinner', () => {
     const fps = ref(100);
 
     async function fetchThemes() {
-        const url = 'themes?hidden=false';
+        const url = 'themes?hidden=true';
         try {
             const response = await apiFetch(url);
             themes.value = parseThemes(response);
